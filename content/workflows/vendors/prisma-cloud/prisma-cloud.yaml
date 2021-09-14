@@ -25,6 +25,7 @@ steps:
 output:
   - name: vendorId
     value: prisma-cloud
+    value-type: STRING
   - name: alertId
     value: ."lookup".alertId
   - name: vendorPolicy
