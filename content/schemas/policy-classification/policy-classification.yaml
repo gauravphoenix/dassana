@@ -3,28 +3,26 @@ classes:
     subclasses:
       - id: config
         categories:
-          - id: access-sharing
-            subcategories:
-              - id: public-access
-          - id: cryptography
-            subcategories:
-              - id: encryption
-              - id: ssl
           - id: networking
             subcategories:
               - id: firewall
+              - id: encryption
+              - id: availability
+          - id: data
+            subcategories:
+              - id: availability
+              - id: encryption
           - id: visibility
             subcategories:
               - id: logging
-              - id: alerting
+              - id: alarm
               - id: monitoring
+              - id: inventory
           - id: iam
             subcategories:
               - id: authentication
               - id: authorization
-          - id: credential-management
-            subcategories:
-              - id: secrets
+              - id: public-access
   - id: incident
     subclasses:
       - id: reconnaissance
