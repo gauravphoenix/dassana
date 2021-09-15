@@ -231,6 +231,7 @@ Resources:
                   - sqs:GetQueueAttributes
                 Resource:
                   - !GetAtt DassanaInboundQueue.Arn
+                  - !GetAtt DassanaOutboundQueue.Arn
                   - !GetAtt DassanaDeadLetterQueue.Arn
 
   DassanaInboundQueuePolicyForEventHub:

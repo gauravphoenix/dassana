@@ -153,6 +153,7 @@ public class RequestProcessor {
       processingResponse.setDecoratedJson(finalJson);
 
     } else {//normalization did not happen
+      processingResponse.setNormalizerWorkflow(null);
       s3Manager.uploadedToS3(normalizationResult, request.getInputJson());
       processingResponse.setDecoratedJson(request.getInputJson());
     }
