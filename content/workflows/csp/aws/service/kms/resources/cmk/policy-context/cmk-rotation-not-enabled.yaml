@@ -12,8 +12,8 @@ resource-type: key
 
 class: risk
 subclass: config
-category: credential-management
-subcategory: secrets
+category: data
+subcategory: encryption
 
 filters:
   - vendor: aws-config

@@ -12,7 +12,7 @@ resource-type: distribution
 
 class: risk
 subclass: config
-category: access-sharing
+category: visibility
 subcategory: public-access
 
 filters:
