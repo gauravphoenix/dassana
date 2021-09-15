@@ -27,7 +27,7 @@ class WorkflowValidatorTest {
   @Inject Gson gson;
 
   void assertFail(String errMsg, Path path){
-    Assertions.fail(String.format("%s. File: %s", errMsg, path.toFile().getName()));
+    Assertions.fail(String.format("error in file: %s, %s", path.toFile().getName(), errMsg));
   }
 
   @Test
