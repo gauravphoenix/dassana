@@ -27,6 +27,9 @@ classes:
               - id: key-management
               - id: certificate-management
               - id: secret-management
+          - id: uncategorized
+            subcategories:
+              - id: best-practice
   - id: incident
     subclasses:
       - id: reconnaissance
