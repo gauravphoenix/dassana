@@ -8,21 +8,25 @@ classes:
               - id: firewall
               - id: encryption
               - id: availability
-          - id: data
+          - id: storage
             subcategories:
-              - id: availability
               - id: encryption
+              - id: availability
           - id: visibility
             subcategories:
+              - id: hygiene
               - id: logging
-              - id: alarm
               - id: monitoring
-              - id: inventory
           - id: iam
             subcategories:
               - id: authentication
               - id: authorization
               - id: public-access
+          - id: crypto
+            subcategories:
+              - id: key-management
+              - id: certificate-management
+              - id: secret-management
   - id: incident
     subclasses:
       - id: reconnaissance
