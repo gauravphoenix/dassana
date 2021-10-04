@@ -10,6 +10,8 @@ from cloudsplaining.scan.policy_document import PolicyDocument
 from cloudsplaining.shared.exclusions import Exclusions
 from cloudsplaining.output.policy_finding import PolicyFinding
 
+from dassana.common.cache import configure_ttl_cache
+
 with open('input.json', 'r') as schema:
     schema = load(schema)
     dassana_aws = DassanaAwsObject()
@@ -22,6 +24,9 @@ def cloudsplaining_parse(policy_document, exclusions_config):
     return policy_document, exclusions, policy_finding
 
 
+get_cached_client = configure_ttl_cache(1024, 60)
+
+
 @validator(inbound_schema=schema)
 def handle(event: Dict[str, Any], context: LambdaContext):
     policies = []
@@ -29,10 +34,11 @@ def handle(event: Dict[str, Any], context: LambdaContext):
     exclusions_config = {}
 
     iam_arn = parse_arn(event.get('iamArn'))
-    client = dassana_aws.create_aws_client(context, 'iam', event.get('region'))
-
     name = iam_arn.resource
     resource_type = iam_arn.resource_type
+
+    client = get_cached_client(dassana_aws.create_aws_client, context=context, service='iam',
+                               region=event.get('region'))
 
     if resource_type == 'role':
         paginator = client.get_paginator('list_attached_role_policies')
@@ -66,7 +72,6 @@ def handle(event: Dict[str, Any], context: LambdaContext):
                         'PolicyArn': ''
                     })
         except Exception:
-            # TODO: add error handling
             pass
 
     elif resource_type == 'user':
@@ -84,7 +89,6 @@ def handle(event: Dict[str, Any], context: LambdaContext):
                         'PolicyName': policy['PolicyName']
                     })
         except Exception:
-            # TODO: add error handling
             pass
 
         paginator = client.get_paginator('list_user_policies')
