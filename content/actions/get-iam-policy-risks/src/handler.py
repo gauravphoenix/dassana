@@ -13,79 +13,82 @@ from cloudsplaining.output.policy_finding import PolicyFinding
 with open('input.json', 'r') as schema:
     schema = load(schema)
     dassana_aws = DassanaAwsObject()
-    
-def cloudsplain_policy(policy):
-    pass
+
+
+def cloudsplaining_parse(policy_document, exclusions_config):
+    policy_document = PolicyDocument(policy_document)
+    exclusions = Exclusions(exclusions_config)
+    policy_finding = PolicyFinding(policy_document, exclusions)
+    return policy_document, exclusions, policy_finding
 
 
 @validator(inbound_schema=schema)
 def handle(event: Dict[str, Any], context: LambdaContext):
-    
     policies = []
-    all_findings = {}
+    policy_statements = []
     exclusions_config = {}
-    
-    latency = 0
-    
-    iam_arn = event.get('iamArn')
+
+    iam_arn = parse_arn(event.get('iamArn'))
     client = dassana_aws.create_aws_client(context, 'iam', event.get('region'))
-    
-    prefix, name = iam_arn.split("/")
-    prefix = prefix.split(":")
-    
-    if prefix[-1] == 'role':
+
+    name = iam_arn.resource
+    resource_type = iam_arn.resource_type
+
+    if resource_type == 'role':
         paginator = client.get_paginator('list_attached_role_policies')
-        
+
         page_iterator = paginator.paginate(
             RoleName=name,
             PathPrefix='/'
         )
-        
+
         try:
             for page in page_iterator:
                 for policy in page['AttachedPolicies']:
                     policies.append({
-                        'PolicyArn':policy['PolicyArn'], 
-                        'PolicyName':policy['PolicyName']
+                        'PolicyArn': policy['PolicyArn'],
+                        'PolicyName': policy['PolicyName']
                     })
         except Exception:
             pass
-            
+
         paginator = client.get_paginator('list_role_policies')
-        
+
         page_iterator = paginator.paginate(
             RoleName=name
         )
-        
+
         try:
             for page in page_iterator:
                 for policy_name in page['PolicyNames']:
                     policies.append({
-                        'PolicyName':policy_name,
-                        'PolicyArn':''
+                        'PolicyName': policy_name,
+                        'PolicyArn': ''
                     })
         except Exception:
+            # TODO: add error handling
             pass
-        
-    elif prefix[-1] == 'user':
+
+    elif resource_type == 'user':
         paginator = client.get_paginator('list_attached_user_policies')
-        
+
         page_iterator = paginator.paginate(
             UserName=name,
             PathPrefix='/'
         )
-        try: 
+        try:
             for page in page_iterator:
                 for policy in page['AttachedPolicies']:
                     policies.append({
-                        'PolicyArn':policy['PolicyArn'], 
-                        'PolicyName':policy['PolicyName']
+                        'PolicyArn': policy['PolicyArn'],
+                        'PolicyName': policy['PolicyName']
                     })
         except Exception:
+            # TODO: add error handling
             pass
-        
+
         paginator = client.get_paginator('list_user_policies')
-        
+
         page_iterator = paginator.paginate(
             UserName=name
         )
@@ -93,18 +96,18 @@ def handle(event: Dict[str, Any], context: LambdaContext):
             for page in page_iterator:
                 for policy_name in page['PolicyNames']:
                     policies.append({
-                        'PolicyName':policy_name,
-                        'PolicyArn':''
+                        'PolicyName': policy_name,
+                        'PolicyArn': ''
                     })
         except Exception:
             pass
-        
-    elif prefix[-1] == 'policy':
+
+    elif resource_type == 'policy':
         policies.append({
-            'PolicyArn':iam_arn, 
-            'PolicyName':name
+            'PolicyArn': iam_arn,
+            'PolicyName': name
         })
-    
+
     for policy in policies:
         if policy['PolicyArn'] != '':
             policy_basic = client.get_policy(
@@ -121,35 +124,17 @@ def handle(event: Dict[str, Any], context: LambdaContext):
                 PolicyName=policy['PolicyName']
             )
             policy_document = policy_detailed['PolicyDocument']
-            
-        policy['PolicyDocument'] = policy_document
-        
-        policy_document = PolicyDocument(policy_document)
-        exclusions = Exclusions(exclusions_config)
-        policy_finding = PolicyFinding(policy_document, exclusions)
-        
-        policy['PolicyFindings'] = policy_finding.results
 
-        
-        for finding_category in policy_finding.results.keys():
-            if finding_category in all_findings:
-                for finding in policy_finding.results[finding_category]:
-                    if finding_category != 'PrivilegeEscalation':
-                        all_findings[finding_category].add(finding)
-                    else:
-                        for perm in finding['actions']:
-                            all_findings[finding_category].add(perm) 
-            else:
-                if finding_category != 'PrivilegeEscalation':
-                    all_findings[finding_category] = set(policy_finding.results[finding_category])
-                else:
-                    all_findings[finding_category] = set([perm for type in policy_finding.results[finding_category] for perm in type['actions']])
-        
-    all_findings = {category: list(findings) for category, findings in all_findings.items()}
-    print("Total Latency")
-    print(latency)
+        policy_statements += policy_document['Statement']
+
+    policy_document = {
+        'Statement': policy_statements
+    }
+
+    policy_document, exclusions, policy_finding = cloudsplaining_parse(policy_document, exclusions_config)
+
     response = dumps({
-        'PolicyFindings': all_findings
+        'PolicyFindings': policy_finding.results
     }, default=str)
-    
+
     return {"result": loads(response)}

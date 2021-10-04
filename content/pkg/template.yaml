@@ -703,6 +703,7 @@ Resources:
       Handler: src/handler.handle
       Runtime: python3.7
       CodeUri: ../actions/get-iam-policy-risks
+      MemorySize: 2056
       Layers:
         - !Ref DassanaActionsPythonLayer
       Role:
