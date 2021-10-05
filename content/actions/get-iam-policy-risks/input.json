@@ -5,6 +5,9 @@
   "properties": {
     "iamArn": {
       "type": "string"
+    },
+    "region": {
+      "type": "string"
     }
   },
   "required": [

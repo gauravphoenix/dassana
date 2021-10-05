@@ -1,6 +1,5 @@
 from json import load, loads, dumps
 from typing import Dict, Any
-import time
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
 from aws_lambda_powertools.utilities.validation import validator
@@ -17,14 +16,16 @@ with open('input.json', 'r') as schema:
     dassana_aws = DassanaAwsObject()
 
 
-def cloudsplaining_parse(policy_document, exclusions_config):
+def cloudsplaining_parse(policy_document, exclusions_config=None) -> PolicyFinding:
+    if exclusions_config is None:
+        exclusions_config = {}
     policy_document = PolicyDocument(policy_document)
     exclusions = Exclusions(exclusions_config)
-    policy_finding = PolicyFinding(policy_document, exclusions)
-    return policy_document, exclusions, policy_finding
+    return get_cached_findings(PolicyFinding, policy_document=policy_document, exclusions=exclusions)
 
 
-get_cached_client = configure_ttl_cache(1024, 60)
+get_cached_client_aws = configure_ttl_cache(1024, 60)
+get_cached_findings = configure_ttl_cache(1024, 60)
 
 
 @validator(inbound_schema=schema)
@@ -37,8 +38,8 @@ def handle(event: Dict[str, Any], context: LambdaContext):
     name = iam_arn.resource
     resource_type = iam_arn.resource_type
 
-    client = get_cached_client(dassana_aws.create_aws_client, context=context, service='iam',
-                               region=event.get('region'))
+    client = get_cached_client_aws(dassana_aws.create_aws_client, context=context, service='iam',
+                                   region=event.get('region'))
 
     if resource_type == 'role':
         paginator = client.get_paginator('list_attached_role_policies')
@@ -135,7 +136,7 @@ def handle(event: Dict[str, Any], context: LambdaContext):
         'Statement': policy_statements
     }
 
-    policy_document, exclusions, policy_finding = cloudsplaining_parse(policy_document, exclusions_config)
+    policy_finding = cloudsplaining_parse(policy_document, exclusions_config)
 
     response = dumps({
         'PolicyFindings': policy_finding.results

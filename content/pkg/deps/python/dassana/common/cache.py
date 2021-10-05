@@ -1,7 +1,7 @@
 from hashlib import md5
+from json import dumps
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from boto3 import client
 from cachetools import TTLCache, cached
 
 
@@ -34,7 +34,7 @@ class _HashedTuple(tuple):
 _kwmark = (_HashedTuple,)
 
 
-def generate_hash(client_call, *args, **kwargs) -> hex:
+def generate_hash(func, *args, **kwargs) -> hex:
     """
     Dassana hash function used for caching AWS clients. The hash key is on service, region, and LambdaContext (if
     available). The most common case is to cache SDK clients with hashing on the service and region, and/or
@@ -48,7 +48,7 @@ def generate_hash(client_call, *args, **kwargs) -> hex:
     are unpacked into **kwargs for hash generation (the sorting will ensure 1:1 hashing for identical objects
     regardless of key order).
 
-    :param client_call: function
+    :param func: function
     Not involved in the hashing scheme, it is just included in generate_hash as this function is wired
     into the make_cached_call under configure_ttl_cache.
     :param args: arguments
@@ -64,6 +64,13 @@ def generate_hash(client_call, *args, **kwargs) -> hex:
             **kwargs,
             **context
         }
+    for k, v in dict(kwargs).items():
+        if issubclass(type(v), dict):
+            pop_v = kwargs.pop(k)
+            kwargs = {
+                **kwargs,
+                k: dumps(pop_v, sort_keys=True, default=str).encode('utf-8')
+            }
     return md5(hex(sum(sorted(kwargs.items()), _kwmark).__hash__()).encode()).hexdigest()
 
 
@@ -83,7 +90,7 @@ def configure_ttl_cache(maxsize=1024, ttl=60, hash_op=generate_hash):
     cache = TTLCache(maxsize=maxsize, ttl=ttl)
 
     @cached(cache, key=hash_op)
-    def make_cached_call(client_call, *args, **kwargs) -> client:
-        return client_call(**kwargs)
+    def make_cached_call(func, *args, **kwargs):
+        return func(**kwargs)
 
     return make_cached_call
