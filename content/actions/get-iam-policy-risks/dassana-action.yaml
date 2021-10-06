@@ -12,8 +12,8 @@ license:
   url: https://www.apache.org/licenses/LICENSE-2.0
   id: Apache
 author:
-  name: Kaushik Devireddy
-  email: kdev@ucla.edu
+  name: dassana
+  email: support@dassana.io
 compatible-type: policy-context
 labels:
   - policy-context
