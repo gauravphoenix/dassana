@@ -1,54 +1,67 @@
 package app.dassana.core.launch.model;
 
+import app.dassana.core.workflow.model.Workflow;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Request {
 
   private final String inputJson;
-
-
-  boolean includeStepOutput;
-  boolean includeAlertInOutput;
-  boolean isDefault;
-
-  private boolean refreshFromS3;
+  boolean includeOriginalAlert=false;
+  private Set<Workflow> workflowSetToRun;
+  private Map<String,Workflow> workflowIdToWorkflowMap=new HashMap<>();
   private List<String> additionalWorkflowYamls;
-
   private String workflowId; //if specified, only this workflow will run
+  private boolean useCache=false;
 
-  //engine specific
-  private boolean skipPostProcessor;
+  public boolean isUseCache() {
+    return useCache;
+  }
+
+  public void setUseCache(boolean useCache) {
+    this.useCache = useCache;
+  }
+
+  public boolean isIncludeOriginalAlert() {
+    return includeOriginalAlert;
+  }
+
+  public void setIncludeOriginalAlert(boolean includeOriginalAlert) {
+    this.includeOriginalAlert = includeOriginalAlert;
+  }
+
+
+  public Map<String, Workflow> getWorkflowIdToWorkflowMap() {
+    return workflowIdToWorkflowMap;
+  }
+
+  public void setWorkflowIdToWorkflowMap(
+      Map<String, Workflow> workflowIdToWorkflowMap) {
+    this.workflowIdToWorkflowMap = workflowIdToWorkflowMap;
+  }
+
+
 
   public Request(String inputJson) {
     this.inputJson = inputJson;
-  }
-
-  public boolean isIncludeStepOutput() {
-    return includeStepOutput;
-  }
-
-  public boolean isIncludeAlertInOutput() {
-    return includeAlertInOutput;
-  }
-
-  public void setIncludeAlertInOutput(boolean includeAlertInOutput) {
-    this.includeAlertInOutput = includeAlertInOutput;
-  }
-
-  public void setIncludeStepOutput(boolean includeStepOutput) {
-    this.includeStepOutput = includeStepOutput;
   }
 
   public String getWorkflowId() {
     return workflowId;
   }
 
-  public void setWorkflowId(String workflowId) {
-    this.workflowId = workflowId;
+  public Set<Workflow> getWorkflowSetToRun() {
+    return workflowSetToRun;
   }
 
-  public boolean isRefreshFromS3() {
-    return refreshFromS3;
+  public void setWorkflowSetToRun(Set<Workflow> workflowSetToRun) {
+    this.workflowSetToRun = workflowSetToRun;
+  }
+
+  public void setWorkflowId(String workflowId) {
+    this.workflowId = workflowId;
   }
 
   public List<String> getAdditionalWorkflowYamls() {
@@ -59,28 +72,10 @@ public class Request {
     this.additionalWorkflowYamls = additionalWorkflowYamls;
   }
 
-  public void setRefreshFromS3(boolean refreshFromS3) {
-    this.refreshFromS3 = refreshFromS3;
-  }
 
 
   public String getInputJson() {
     return inputJson;
   }
 
-  public boolean isSkipPostProcessor() {
-    return skipPostProcessor;
-  }
-
-  public void setSkipPostProcessor(boolean skipPostProcessor) {
-    this.skipPostProcessor = skipPostProcessor;
-  }
-
-  public boolean isDefault() {
-    return isDefault;
-  }
-
-  public void setDefault(boolean isDefault) {
-    this.isDefault = isDefault;
-  }
 }

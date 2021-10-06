@@ -1,6 +1,5 @@
 package app.dassana.core.workflow;
 
-import app.dassana.core.contentmanager.ContentManagerApi;
 import app.dassana.core.launch.model.Message;
 import app.dassana.core.launch.model.Request;
 import app.dassana.core.launch.model.Severity;
@@ -19,6 +18,7 @@ import app.dassana.core.workflow.model.Step;
 import app.dassana.core.workflow.model.ValueType;
 import app.dassana.core.workflow.model.Workflow;
 import app.dassana.core.workflow.model.WorkflowOutput;
+import app.dassana.core.workflow.model.WorkflowOutputException;
 import app.dassana.core.workflow.model.WorkflowOutputWithRisk;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -54,9 +54,7 @@ public class WorkflowRunner {
 
   @Inject StepRunnerApi stepRunnerApi;
   @Inject private FilterMatch filterMatch;
-  @Inject private ContentManagerApi contentManagerApi;
   @Inject private RiskEvaluator riskEvaluator;
-
 
   Gson gson = new Gson();
 
@@ -82,15 +80,6 @@ public class WorkflowRunner {
     List<Error> errorList = new LinkedList<>();
     workflowOutputWithRisk.setErrorList(errorList);
 
-    Set<Workflow> workflowSet;
-    if (StringUtils.isNotEmpty(request.getWorkflowId())) {
-      workflowSet = new HashSet<>();
-      workflowSet.add(contentManagerApi.getWorkflowIdToWorkflowMap(request).get(request.getWorkflowId()));
-
-    } else {
-      workflowSet = contentManagerApi.getWorkflowSet(request);
-    }
-
     Map<String, Object> stepToOutPutMap = new HashMap<>();
     JSONObject jsonObject;
     JsonyThings.throwExceptionIfNotValidJsonObj(jsonToUse);
@@ -98,14 +87,22 @@ public class WorkflowRunner {
 
     //let's find out applicable workflows
     Set<Workflow> candidates = new HashSet<>();
-    for (Workflow workflow1 : workflowSet) {
+    for (Workflow workflow1 : request.getWorkflowSetToRun()) {
       if (workflow1.getClass() == workflowType) {
         candidates.add(workflow1);
       }
     }
-    ///.and match input against them
+    //.and match input against them
     Optional<Workflow> matchingWorkflow;
-    matchingWorkflow = filterMatch.getMatchingWorkflow(candidates, jsonToUse);
+
+    //if a workflow has been provided with the request, no need to match anything
+    if (StringUtils.isNotEmpty(request.getWorkflowId())) {
+      Workflow workflow = request.getWorkflowIdToWorkflowMap().get(request.getWorkflowId());
+      matchingWorkflow = Optional.of(workflow);
+
+    } else {
+      matchingWorkflow = filterMatch.getMatchingWorkflow(candidates, jsonToUse);
+    }
 
     if (matchingWorkflow.isPresent()) {
       workflowOutputWithRisk.setWorkflowId(matchingWorkflow.get().getId());
@@ -145,11 +142,9 @@ public class WorkflowRunner {
           }
           workflowOutputWithRisk.setStepOutput(list);
         } catch (Exception e) {
-          Error error = new Error();
-          error.setComponent(Component.STEP);
-          error.setComponentId(step.getId());
-          error.setMessage(new Message(e.getMessage(), Severity.ERROR));
-          error.setWorkflowId(workflow.getId());
+          Error error = new Error(workflow.getId(), workflow.getType(), Component.STEP, step.getId(),
+              new Message(e.getMessage(),
+                  Severity.ERROR));
           errorList.add(error);
 
         }
@@ -160,17 +155,13 @@ public class WorkflowRunner {
       try {
         workflowOutput = getWorkflowOutput(workflow.getOutput(), jsonObject.toString());
         workflowOutputWithRisk.setOutput(getSimpleOutput(workflowOutput, workflow));
-      } catch (Exception e) {
-        Error error = new Error();
-        error.setWorkflowId(workflow.getId());
-        error.setMessage(new Message(e.getMessage(), Severity.ERROR));
-        error.setComponent(Component.WORKFLOW_OUTPUT);
+      } catch (WorkflowOutputException e) {
+        Error error = new Error(workflow.getId(), workflow.getType(), Component.WORKFLOW_OUTPUT, e.getOutputField(),
+            new Message(e.getMessage(), Severity.ERROR));
         errorList.add(error);
-
       }
 
       //handle risk
-
       if (workflow instanceof GeneralContext) {
         RiskConfig riskConfig;
         var resPriWorkflow = (GeneralContext) workflow;
@@ -179,16 +170,12 @@ public class WorkflowRunner {
           workflowOutputWithRisk
               .setRisk(getRisk(riskConfig, workflowOutputWithRisk, simpleOutputJson));
         } catch (RiskEvalException e) {
-          Error error = new Error();
-          error.setComponent(Component.RISK_CALC);
-          error.setComponentId(e.getRuleName());
-          error.setMessage(new Message(e.getMessage(), Severity.ERROR));
-          error.setWorkflowId(error.getWorkflowId());
+          Error error = new Error(workflow.getId(), workflow.getType(), Component.RISK_CALC, e.getRuleName(),
+              new Message(e.getMessage(), Severity.ERROR));
           errorList.add(error);
 
         }
       }
-
 
       return Optional.of(workflowOutputWithRisk);
 
@@ -199,29 +186,34 @@ public class WorkflowRunner {
   }
 
 
-  private String getWorkflowOutput(List<Output> output, String jsonStr)
-      throws JsonProcessingException {
+  private String getWorkflowOutput(List<Output> output, String jsonStr) {
 
     JSONObject jsonObject = new JSONObject();
 
     for (Output map : output) {
-
       String fieldName = map.getName();
-      String value = map.getValue();
+      try {
 
-      if (map.getValueType().equals(ValueType.JQ_EXPRESSION)) {
-        JsonQuery jsonQuery = JsonQuery.compile(value, Version.LATEST);
-        JsonNode in = MAPPER.readTree(jsonStr);
+        String value = map.getValue();
 
-        Scope childScope = Scope.newChildScope(rootScope);
+        if (map.getValueType().equals(ValueType.JQ_EXPRESSION)) {
+          JsonQuery jsonQuery = JsonQuery.compile(value, Version.LATEST);
+          JsonNode in = MAPPER.readTree(jsonStr);
 
-        jsonQuery.apply(childScope, in, jsonNode -> {
-          Object o = gson.fromJson(jsonNode.toString(), Object.class);
-          jsonObject.put(fieldName, o);
-        });
+          Scope childScope = Scope.newChildScope(rootScope);
 
-      } else if (map.getValueType().equals(ValueType.STRING)) {
-        jsonObject.put(map.getName(), map.getValue());
+          jsonQuery.apply(childScope, in, jsonNode -> {
+            Object o = gson.fromJson(jsonNode.toString(), Object.class);
+            jsonObject.put(fieldName, o);
+          });
+
+        } else if (map.getValueType().equals(ValueType.STRING)) {
+          jsonObject.put(map.getName(), map.getValue());
+        }
+      } catch (Exception e) {
+        WorkflowOutputException workflowOutputException = new WorkflowOutputException();
+        workflowOutputException.setOutputField(fieldName);
+        throw workflowOutputException;
       }
 
     }

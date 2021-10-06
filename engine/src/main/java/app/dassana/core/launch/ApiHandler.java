@@ -1,3 +1,4 @@
+/*
 package app.dassana.core.launch;
 
 import static app.dassana.core.contentmanager.ContentManager.GENERAL_CONTEXT;
@@ -57,6 +58,7 @@ import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+*/
 /**
  * todo: this class has become quite big, needs to be refactored
  * <p>
@@ -69,7 +71,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
  * rather handle api routing within this function.In future, we will have more APIs so even this approach isn't optimal
  * either. But for now, complexity in this class is manageable- there are only a few api routes- /run, /validate and
  * /ping
- */
+ *//*
+
 @Introspected
 public class ApiHandler extends
     MicronautRequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -86,6 +89,7 @@ public class ApiHandler extends
 
   @Inject ContentManager contentManager; //todo: not a good idea to inject an implementation
 
+
   private static final Logger logger = LoggerFactory.getLogger(ApiHandler.class);
 
   public static final String API_PARAM_DEFAULT = "default";
@@ -96,8 +100,7 @@ public class ApiHandler extends
   public static final String API_INCLUDE_ALERT_IN_OUTPUT = "includeAlert";
   public static final String API_INCLUDE_STEP_OUTPUT = "includeStepOutput";
 
-  public static final String MISSING_NORMALIZATION_MSG = "Dassana couldn't normalize the alert you sent, please verify "
-      + "normalizers filter config";
+
 
   public static final String WORKFLOW_PATH = "/workflows";
   public static final String VALIDATE_WORKFLOW_PATH = WORKFLOW_PATH.concat("/validate");
@@ -341,7 +344,8 @@ public class ApiHandler extends
     return jsonObject.toString();
   }
 
-  /**
+  */
+/**
    * DO NOT put anything cloud implementation specific in this method i.e. do not have any aws/gcp/azure specific
    * constructs in this method as we intend to use this method as abstracted method which can be called by anyone who
    * speaks http layer. As you can see, there is no aws api gateway specific parameters.
@@ -349,7 +353,8 @@ public class ApiHandler extends
    * @param parameters   query params
    * @param inputJsonStr input to process
    * @return request obj which the engine will run
-   */
+   *//*
+
   public Request getRequestFromQueryParam(Map<String, String> parameters, String inputJsonStr,
       Map<String, String> headers) {
 
@@ -398,8 +403,6 @@ public class ApiHandler extends
 
     }
 
-    request.setRefreshFromS3(refreshFromS3);
-    request.setSkipPostProcessor(skipPostProcessor);
     request.setDefault(isDefault);
 
     return request;
@@ -407,3 +410,4 @@ public class ApiHandler extends
 
 
 }
+*/

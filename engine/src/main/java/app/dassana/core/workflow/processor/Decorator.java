@@ -3,8 +3,6 @@ package app.dassana.core.workflow.processor;
 import static app.dassana.core.contentmanager.ContentManager.GENERAL_CONTEXT;
 import static app.dassana.core.contentmanager.ContentManager.NORMALIZE;
 import static app.dassana.core.contentmanager.ContentManager.POLICY_CONTEXT;
-import static app.dassana.core.contentmanager.ContentManager.POLICY_CONTEXT_CAT;
-import static app.dassana.core.contentmanager.ContentManager.POLICY_CONTEXT_SUB_CAT;
 import static app.dassana.core.contentmanager.ContentManager.RESOURCE_CONTEXT;
 import static app.dassana.core.contentmanager.ContentManager.WORKFLOW_ID;
 
@@ -47,9 +45,7 @@ public class Decorator {
 
     //handle normalization decoration
     JSONObject jsonObjectForNormalization = new JSONObject();
-    if (request.isIncludeStepOutput()) {
-      jsonObjectForNormalization.put("step-output", normalizationOutput.getStepOutput());
-    }
+    jsonObjectForNormalization.put("step-output", normalizationOutput.getStepOutput());
     jsonObjectForNormalization.put("output", normalizationOutput.getOutput());
     jsonObjectForNormalization.put(WORKFLOW_ID, normalizationOutput.getWorkflowId());
     jsonObjectForNormalization.put("workflowType", NORMALIZE);
@@ -59,9 +55,7 @@ public class Decorator {
       generalContextJsonObj.put(WORKFLOW_ID, generalContextWorkflowOutput.get().getWorkflowId());
       generalContextJsonObj.put("workflowType", GENERAL_CONTEXT);
       generalContextJsonObj.put("output", generalContextWorkflowOutput.get().getOutput());
-      if (request.isIncludeStepOutput()) {
-        generalContextJsonObj.put("step-output", generalContextWorkflowOutput.get().getStepOutput());
-      }
+      generalContextJsonObj.put("step-output", generalContextWorkflowOutput.get().getStepOutput());
       Map<String, Object> riskObj = new HashMap<>();
       riskObj.put("riskValue", generalContextWorkflowOutput.get().getRisk().getRiskValue());
       riskObj.put("condition", generalContextWorkflowOutput.get().getRisk().getCondition());
@@ -75,16 +69,14 @@ public class Decorator {
     }
 
     if (policyContextWorkflowOutput.isPresent()) {
-      PolicyContext policyContext = (PolicyContext) contentManagerApi.getWorkflowIdToWorkflowMap(request)
+      PolicyContext policyContext = (PolicyContext) request.getWorkflowIdToWorkflowMap()
           .get(policyContextWorkflowOutput.get().getWorkflowId());
 
       JSONObject jsonObject = new JSONObject();
       jsonObject.put(WORKFLOW_ID, policyContext.getId());
-      jsonObject.put("workflowType",POLICY_CONTEXT);
+      jsonObject.put("workflowType", POLICY_CONTEXT);
       jsonObject.put("output", policyContextWorkflowOutput.get().getOutput());
-      if (request.isIncludeStepOutput()) {
-        jsonObject.put("step-output", policyContextWorkflowOutput.get().getStepOutput());
-      }
+      jsonObject.put("step-output", policyContextWorkflowOutput.get().getStepOutput());
 
       Map<String, Object> riskObj = new HashMap<>();
       riskObj.put("riskValue", policyContextWorkflowOutput.get().getRisk().getRiskValue());
@@ -99,16 +91,14 @@ public class Decorator {
     }
 
     if (resourceContextWorkflowOutput.isPresent()) {
-      ResourceContext resourceContext = (ResourceContext) contentManagerApi.getWorkflowIdToWorkflowMap(request)
+      ResourceContext resourceContext = (ResourceContext) request.getWorkflowIdToWorkflowMap()
           .get(resourceContextWorkflowOutput.get().getWorkflowId());
 
       JSONObject jsonObject = new JSONObject();
       jsonObject.put(WORKFLOW_ID, resourceContext.getId());
       jsonObject.put("workflowType", RESOURCE_CONTEXT);
       jsonObject.put("output", resourceContextWorkflowOutput.get().getOutput());
-      if (request.isIncludeStepOutput()) {
-        jsonObject.put("step-output", resourceContextWorkflowOutput.get().getStepOutput());
-      }
+      jsonObject.put("step-output", resourceContextWorkflowOutput.get().getStepOutput());
 
       Map<String, Object> riskObj = new HashMap<>();
       riskObj.put("riskValue", resourceContextWorkflowOutput.get().getRisk().getRiskValue());

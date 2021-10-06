@@ -1,5 +1,5 @@
 from json import load
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.utilities.typing import LambdaContext
@@ -34,6 +34,7 @@ class Exposure(BaseModel):
         type: str = None
         canReceiveUnauthenticatedTraffic: bool = False
         exceptionMatch: bool = False
+        behindLoadBalancer: Optional[bool] = False
         authConfig: Dict = None
 
     appLayer: AppLayer
@@ -90,6 +91,7 @@ def handle(event: Dict[str, Any], context: LambdaContext):
                         if scheme != 'internet-facing':
                             continue
                         exp.appLayer.type = scheme
+                        exp.appLayer.behindLoadBalancer = True
                         listeners_resp = elb_client.describe_listeners(
                             LoadBalancerArn=lb_arn
                         )

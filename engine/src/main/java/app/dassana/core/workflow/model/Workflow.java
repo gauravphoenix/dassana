@@ -15,6 +15,25 @@ public class Workflow {
   private List<Step> steps = new LinkedList<>();
   private List<Output> output = new LinkedList<>();
 
+  boolean isDefault = true;
+  String workflowFileContent;
+
+  public String getWorkflowFileContent() {
+    return workflowFileContent;
+  }
+
+  public void setWorkflowFileContent(String workflowFileContent) {
+    this.workflowFileContent = workflowFileContent;
+  }
+
+  public boolean isDefault() {
+    return isDefault;
+  }
+
+  public void setDefault(boolean aDefault) {
+    isDefault = aDefault;
+  }
+
   public Integer getSchema() {
     return schema;
   }

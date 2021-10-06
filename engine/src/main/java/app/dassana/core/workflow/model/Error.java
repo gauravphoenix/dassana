@@ -2,12 +2,33 @@ package app.dassana.core.workflow.model;
 
 import app.dassana.core.launch.model.Message;
 
+
+
+
 public class Error {
 
   private String workflowId;
+  private String workflowType;
   private Component component;
   private String componentId;
   private Message message;
+
+  public Error(String workflowId, String workflowType, Component component, String componentId,
+      Message message) {
+    this.workflowId = workflowId;
+    this.workflowType = workflowType;
+    this.component = component;
+    this.componentId = componentId;
+    this.message = message;
+  }
+
+  public String getWorkflowType() {
+    return workflowType;
+  }
+
+  public void setWorkflowType(String workflowType) {
+    this.workflowType = workflowType;
+  }
 
   public String getWorkflowId() {
     return workflowId;

@@ -1,3 +1,4 @@
+/*
 package app.dassana.core.launch;
 
 
@@ -5,7 +6,7 @@ import static app.dassana.core.contentmanager.ContentManager.GENERAL_CONTEXT;
 import static app.dassana.core.contentmanager.ContentManager.NORMALIZE;
 import static app.dassana.core.contentmanager.ContentManager.POLICY_CONTEXT;
 import static app.dassana.core.contentmanager.ContentManager.WORKFLOW_ID;
-import static app.dassana.core.launch.ApiHandler.MISSING_NORMALIZATION_MSG;
+import static app.dassana.core.contentmanager.Parser.MISSING_NORMALIZATION_MSG;
 import static app.dassana.core.util.JsonyThings.MESSAGE;
 import static app.dassana.core.workflow.processor.Decorator.DASSANA_KEY;
 
@@ -41,8 +42,6 @@ import software.amazon.awssdk.services.s3.S3Client;
 
 @MicronautTest
 public class ApiSqsHandlerTest {
-
-  @Inject Helper helper;
 
 
   @Test
@@ -290,3 +289,4 @@ public class ApiSqsHandlerTest {
   }
 
 }
+*/

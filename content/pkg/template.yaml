@@ -39,7 +39,7 @@ Resources:
           - StatusCode: 200
             ResponseParameters:
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,x-api-key,x-dassana-cache'"
-              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS,GET'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS,GET,DELETE'"
               method.response.header.Access-Control-Allow-Origin: "'*'"
             ResponseTemplates:
               application/json: ""
@@ -83,7 +83,7 @@ Resources:
   ApiGatewayStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      DeploymentId: !Ref ApiGatewayDeployment
+      DeploymentId: !Ref ApiGatewayDeployment42
       Description: Lambda API Stage v1
       RestApiId: !Ref ApiGatewayRestApi
       StageName: v1
@@ -98,7 +98,7 @@ Resources:
       Description: !Join [" ", [{ "Ref": "AWS::StackName" }, "usage plan"]]
       UsagePlanName: !Join ["", [{ "Ref": "AWS::StackName" }, "-usage-plan"]]
 
-  ApiGatewayDeployment:
+  ApiGatewayDeployment42:
     Type: AWS::ApiGateway::Deployment
     DependsOn: ProxyResource
     Properties:
@@ -157,11 +157,11 @@ Resources:
     Metadata:
       BuildMethod: makefile
     Properties:
-      Handler: app.dassana.core.launch.ApiHandler
+      Handler: app.dassana.core.restapi.Application
       Layers:
         - !Ref DassanaEngineJavaLayer
       Runtime: java11
-      MemorySize: 512
+      MemorySize: 1024
       CodeUri: ../../engine
       Role:
         Fn::GetAtt: [DassanaEngineRole, Arn]
@@ -433,7 +433,7 @@ Resources:
       Layers:
         - !Ref DassanaEngineJavaLayer
       Runtime: java11
-      MemorySize: 512
+      MemorySize: 1024
       CodeUri: ../../engine
       Role:
         Fn::GetAtt: [DassanaEngineRole, Arn]

@@ -1,4 +1,12 @@
 micronaut:
+  server:
+    cors:
+      enabled: true
+      configurations:
+        web:
+          exposedHeaders:
+            - x-workflow-is-default
+
   application:
     name: engine
   jms:

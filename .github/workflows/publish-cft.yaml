@@ -41,4 +41,6 @@ jobs:
           tag=`git describe --tags`
           sam package -t .aws-sam/build/template.yaml --s3-bucket ${{ secrets.SAM_ARTIFACTS_BUCKET }}  --s3-prefix $tag --region ${{ secrets.AWS_REGION }} --output-template-file uploaded-template.yaml
           sed -i "s/__version-to-be-replaced-by-cicd__/$tag/g" uploaded-template.yaml
+          ts=`date +%s`
+          sed -i "s/ApiGatewayDeployment42/ApiGatewayDeployment$ts/g" uploaded-template.yaml
           aws s3 cp uploaded-template.yaml s3://${{ secrets.SAM_ARTIFACTS_BUCKET }}/$tag/cft.yaml

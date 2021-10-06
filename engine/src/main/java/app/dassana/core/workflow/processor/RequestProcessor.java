@@ -5,8 +5,7 @@ import static app.dassana.core.contentmanager.ContentManager.POLICY_CONTEXT;
 import static app.dassana.core.contentmanager.ContentManager.RESOURCE_CONTEXT;
 
 import app.dassana.core.contentmanager.ContentManagerApi;
-import app.dassana.core.launch.ApiHandler;
-import app.dassana.core.launch.SqsHandler;
+import app.dassana.core.contentmanager.infra.S3Manager;
 import app.dassana.core.launch.model.ProcessingResponse;
 import app.dassana.core.launch.model.Request;
 import app.dassana.core.normalize.model.NormalizerWorkflow;
@@ -15,12 +14,16 @@ import app.dassana.core.resource.model.GeneralContext;
 import app.dassana.core.resource.model.ResourceContext;
 import app.dassana.core.util.StringyThings;
 import app.dassana.core.workflow.WorkflowRunner;
-import app.dassana.core.workflow.model.NormalizerException;
 import app.dassana.core.workflow.model.Workflow;
 import app.dassana.core.workflow.model.WorkflowOutputWithRisk;
+import io.micronaut.core.util.StringUtils;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
@@ -28,7 +31,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +58,32 @@ public class RequestProcessor {
   private static final Logger logger = LoggerFactory.getLogger(RequestProcessor.class);
 
 
+  public void setWorkflows(final Request request) throws Exception {
+
+    Set<Workflow> workflowSet = contentManagerApi.getWorkflowSet(request);
+    request.setWorkflowSetToRun(workflowSet);
+
+    //if a workflow id is provided, we run only that workflow and nothing else
+    if (StringUtils.isNotEmpty(request.getWorkflowId())) {
+      for (Workflow workflow : workflowSet) {
+        if (workflow.getId().contentEquals(request.getWorkflowId())) {
+          Set<Workflow> workflowSet1 = new HashSet<>();
+          workflowSet1.add(workflow);
+          request.setWorkflowSetToRun(workflowSet1);
+          break;
+        }
+      }
+
+    }
+    Map<String, Workflow> workflowIdToWorkflowMap = new HashMap<>();
+    for (Workflow workflow1 : request.getWorkflowSetToRun()) {
+      workflowIdToWorkflowMap.put(workflow1.getId(), workflow1);
+    }
+    request.setWorkflowIdToWorkflowMap(workflowIdToWorkflowMap);
+
+  }
+
+
   /**
    * This method is the actual processor of alerts. It is completely free of how the alert has been sent to Dassana.
    * Currently, this handler is hooked to two entry points - the API endpoint which is used for debugging and one hooked
@@ -65,15 +93,10 @@ public class RequestProcessor {
    * @return Processing response which currently has only one String member - decoratedJson. This JSON is essentially
    * the original alert sent in the {@link Request#getInputJson()} decorated with the "dassana" object which represents
    * everything Dassana did
-   * @throws Exception in case of any error thrown by downstream components. Currently, we do not handle downstream
-   *                   exceptions so if there is any error in any phase- be it normalization, resource prioritization,
-   *                   contextualization etc, we throw the exception. It is the responsibility of the alert ingestion
-   *                   component to handle exceptions. For example, in case of API endpoint {@link ApiHandler}, we set
-   *                   the status code to 500. In case of SQS handler {@link SqsHandler}, we send the alert to dead
-   *                   letter queue
    */
   public ProcessingResponse processRequest(final Request request) throws Exception {
 
+    setWorkflows(request);
     ProcessingResponse processingResponse = new ProcessingResponse();
 
     logger.info("Processing input {}", StringyThings.removeNewLines(request.getInputJson()));
@@ -92,7 +115,6 @@ public class RequestProcessor {
 
     if (normalizationResult.isPresent()) {
       WorkflowOutputWithRisk normalizedWorkflowOutput = normalizationResult.get();
-      validateNormalizerOutput(normalizedWorkflowOutput);
 
       String normalizedWorkflowJsonStr = new JSONObject(normalizedWorkflowOutput.getOutput()).toString();
 
@@ -119,7 +141,7 @@ public class RequestProcessor {
 
         if (workflowOutputWithRisk.isPresent()) {
           String workflowId = workflowOutputWithRisk.get().getWorkflowId();
-          for (Workflow workflow : contentManagerApi.getWorkflowSet(request)) {
+          for (Workflow workflow : request.getWorkflowSetToRun()) {
             if (workflow.getId().contentEquals(workflowId)) {
               if (workflow.getType().contentEquals(POLICY_CONTEXT)) {
                 policyContext = workflowOutputWithRisk;
@@ -145,8 +167,7 @@ public class RequestProcessor {
       // s3 bucket. This allows any post processors to access the fully decorated json object.
 
       String workflowId = normalizationResult.get().getWorkflowId();
-      NormalizerWorkflow workflow = (NormalizerWorkflow) contentManagerApi.getWorkflowIdToWorkflowMap(request)
-          .get(workflowId);
+      NormalizerWorkflow workflow = (NormalizerWorkflow) request.getWorkflowIdToWorkflowMap().get(workflowId);
       if (workflow.getPostProcessorSteps().size() > 0) {
         String decoratedJsonWithS3key = s3Manager.uploadedToS3(normalizationResult, dassanaDecoratedJson);
         String finalJson = postProcessor
@@ -165,43 +186,6 @@ public class RequestProcessor {
     }
 
     return processingResponse;
-
-  }
-
-  //just a basic test for now
-  //todo: use schema based validation and also perform deep validation where even values are tested.
-  private void validateNormalizerOutput(WorkflowOutputWithRisk normalizerOutput) {
-
-    checkArgsToBeTrue("vendorId", normalizerOutput);
-    checkArgsToBeTrue("alertId", normalizerOutput);
-    //checkArgsToBeTrue("canonicalId", normalizerOutput);
-    checkArgsToBeTrue("vendorPolicy", normalizerOutput);
-    checkArgsToBeTrue("csp", normalizerOutput);
-    checkArgsToBeTrue("resourceContainer", normalizerOutput);
-    checkArgsToBeTrue("region", normalizerOutput);
-    checkArgsToBeTrue("resourceId", normalizerOutput);
-  }
-
-
-  private void checkArgsToBeTrue(String key, WorkflowOutputWithRisk normalizerOutput) {
-
-    try {
-      if (StringUtils.isEmpty((CharSequence) normalizerOutput.getOutput().get(key))) {
-        NormalizerException normalizerException = new NormalizerException(
-            String.format("%s is expected to be not empty", key));
-        normalizerException.setWorkflowId(normalizerOutput.getWorkflowId());
-
-        //relax the requirements for resource-type for now
-        if (!key.contentEquals("resourceType")) {
-          throw normalizerException;
-        }
-      }
-    } catch (NullPointerException exception) {
-      NormalizerException normalizerException = new NormalizerException(
-          String.format("%s is expected to be not null", key));
-      normalizerException.setWorkflowId(normalizerOutput.getWorkflowId());
-      throw normalizerException;
-    }
 
   }
 

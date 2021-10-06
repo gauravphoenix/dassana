@@ -64,11 +64,3 @@ output:
   - name: resourceId
     value: demo-resoureceId
     value-type: STRING
-
-# Dassana deployment automatically creates an outbound queue. After the output is sent to general-context, resource-context and policy-context workflows
-# we wait for those worlflows to finish. As soon as they finish, the response from those workflows are merged into a JSON key named "dassana"
-# This "dassana" key has output of all of the worlflows i.e. all of the context. Finally, this "dassana" key is added to the original alert and the alert is sent to this outbound queue
-
-# for AWS Config/security-hub, the enabled is set to false as we have a post processor which directly integrates with securityhub
-output-queue:
-  enabled: true

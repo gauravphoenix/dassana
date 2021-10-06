@@ -2,10 +2,11 @@ from glob import glob
 
 from aws_lambda_powertools.utilities.parser import event_parser
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from aws_lambda_powertools.utilities.validation import validator
 from pydantic import BaseModel
 from dassana.common.models import NormalizedOutput, AlertClassification
 from yaml import safe_load
-from json import loads
+from json import loads, load
 
 
 class Input(BaseModel):
@@ -36,7 +37,11 @@ def find_policy_match(yml, vendorId="", policyId=""):
 file_paths = glob('/opt/aws/**/*.yaml', recursive=True)
 policy_dict = dict(zip(file_paths, map(find_policy, file_paths)))
 
+with open('input.json', 'r') as f:
+    schema = load(f)
 
+
+@validator(inbound_schema=schema)
 @event_parser(model=Input)
 def handle(event: Input, context: LambdaContext):
     if event.input.resourceType is not None and event.input.service is not None and event.input.csp is not None:

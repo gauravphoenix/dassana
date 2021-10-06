@@ -1,16 +1,19 @@
 package app.dassana.core.api.linter;
 
+import static app.dassana.core.api.linter.BaseLinter.loadFilesFromPath;
+
 import app.dassana.core.api.ValidationException;
 import app.dassana.core.contentmanager.ContentManager;
 import com.google.gson.Gson;
-import org.yaml.snakeyaml.Yaml;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.*;
-
-import static app.dassana.core.api.linter.BaseLinter.loadFilesFromPath;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.yaml.snakeyaml.Yaml;
 
 public class CommonLinter {
 
@@ -57,10 +60,9 @@ public class CommonLinter {
 		}
 
 		if(!names.containsAll(required) && outputs != null) {
-			Set<String> requireCopy = new HashSet<>();
-			requireCopy.addAll(required);
+      Set<String> requireCopy = new HashSet<>(required);
 			requireCopy.removeAll(names);
-			statusMsg = new StatusMsg(true, "Following required fields are missing: " + requireCopy);
+			statusMsg = new StatusMsg(true, "Following recommended fields are missing: " + requireCopy);
 		}
 
 		return statusMsg;

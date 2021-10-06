@@ -1,6 +1,5 @@
 package app.dassana.core.workflow.infra;
 
-import app.dassana.core.policycontext.model.PolicyContext;
 import app.dassana.core.resource.model.GeneralContext;
 import app.dassana.core.workflow.StepRunnerApi;
 import app.dassana.core.workflow.model.Step;
@@ -148,7 +147,7 @@ public class LambdaStepRunner implements StepRunnerApi {
 
     RuntimeContext getRunTimeContextResponse = new RuntimeContext();
 
-    if (workflow instanceof GeneralContext || workflow instanceof PolicyContext) {
+    if (workflow instanceof GeneralContext) {
 
       JSONObject jsonObject = new JSONObject(simpleOutputJsonStr);
       String resourceContainer = jsonObject.getString("resourceContainer");
