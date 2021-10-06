@@ -34,46 +34,42 @@ public class PostProcessor {
       WorkflowOutputWithRisk normalizationResult,
       String processedAlertWithS3key) throws Exception {
 
-    NormalizerWorkflow normalizerWorkflow = (NormalizerWorkflow) contentManagerApi
-        .getWorkflowIdToWorkflowMap(request)
+    NormalizerWorkflow normalizerWorkflow = (NormalizerWorkflow) request.getWorkflowIdToWorkflowMap()
         .get(normalizationResult.getWorkflowId());
 
     String normalizedJsonStr = new JSONObject(normalizationResult.getOutput()).toString();
 
     //we now run post processors of the normalization workflow, if any.
     Map<String, Object> stepIdToResponse = new HashMap<>();
-    if (!request.isSkipPostProcessor()) {
-      List<Step> postProcessorSteps = normalizerWorkflow.getPostProcessorSteps();
-      for (Step step : postProcessorSteps) {
-        String stepOutput = stepRunnerApi
-            .runStep(normalizerWorkflow,
-                step,
-                processedAlertWithS3key,
-                normalizedJsonStr)
-            .getResponse();
-        //we expect the post processor to provide either a json obj or an array, failing which we simply consider
-        // it as a string
-        try {
-          stepIdToResponse.put(step.getId(), new JSONObject(stepOutput));
-        } catch (JSONException e) {
-          try {
-            stepIdToResponse.put(step.getId(), new JSONArray(stepOutput));
-          } catch (JSONException jsonException) {
-            stepIdToResponse.put(step.getId(), stepOutput);
-          }
-        }
-        logger.info("Post processor {} response :{}", step.getId(), stepOutput);
-      }
-      JSONObject finalJsonObj = new JSONObject(processedAlertWithS3key);
-      JSONObject normalizeJsonObj = finalJsonObj.getJSONObject(DASSANA_KEY).getJSONObject(NORMALIZE);
-      normalizeJsonObj.put("post-processor", stepIdToResponse);
 
-      JSONObject dassana = finalJsonObj.getJSONObject(DASSANA_KEY);
-      dassana.put("normalize", normalizeJsonObj);
-      return finalJsonObj.toString();
-    } else {
-      return processedAlertWithS3key;
+    List<Step> postProcessorSteps = normalizerWorkflow.getPostProcessorSteps();
+    for (Step step : postProcessorSteps) {
+      String stepOutput = stepRunnerApi
+          .runStep(normalizerWorkflow,
+              step,
+              processedAlertWithS3key,
+              normalizedJsonStr)
+          .getResponse();
+      //we expect the post processor to provide either a json obj or an array, failing which we simply consider
+      // it as a string
+      try {
+        stepIdToResponse.put(step.getId(), new JSONObject(stepOutput));
+      } catch (JSONException e) {
+        try {
+          stepIdToResponse.put(step.getId(), new JSONArray(stepOutput));
+        } catch (JSONException jsonException) {
+          stepIdToResponse.put(step.getId(), stepOutput);
+        }
+      }
+      logger.info("Post processor {} response :{}", step.getId(), stepOutput);
     }
+    JSONObject finalJsonObj = new JSONObject(processedAlertWithS3key);
+    JSONObject normalizeJsonObj = finalJsonObj.getJSONObject(DASSANA_KEY).getJSONObject(NORMALIZE);
+    normalizeJsonObj.put("post-processor", stepIdToResponse);
+
+    JSONObject dassana = finalJsonObj.getJSONObject(DASSANA_KEY);
+    dassana.put("normalize", normalizeJsonObj);
+    return finalJsonObj.toString();
 
 
   }

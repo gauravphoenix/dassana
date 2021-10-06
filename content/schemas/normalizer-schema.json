@@ -3,36 +3,14 @@
   "$id": "http://example.com/example.json",
   "type": "object",
   "title": "Normalizer schema",
-  "required": ["vendor-name", "output"],
+  "required": ["vendor-id"],
   "properties": {
-    "vendor-name": {
-      "$id": "#/properties/vendor-name",
+    "vendor-id": {
+      "$id": "#/properties/vendor-id",
       "type": "string",
-      "title": "The vendor-name schema",
+      "title": "The vendor-id schema",
       "default": "",
       "examples": ["prisma-cloud"]
-    },
-
-    "output-queue": {
-      "$id": "#/properties/output-queue",
-      "type": "object",
-      "title": "if enabled, the processed alert will be sent to the outbound queue",
-      "default": {},
-      "examples": [
-        {
-          "enabled": true
-        }
-      ],
-      "required": ["enabled"],
-      "properties": {
-        "enabled": {
-          "$id": "#/properties/output-queue/properties/enabled",
-          "type": "boolean",
-          "title": "The enabled schema",
-          "default": false
-        }
-      },
-      "additionalProperties": false
     }
   },
   "additionalProperties": true

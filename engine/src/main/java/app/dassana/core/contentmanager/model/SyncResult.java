@@ -3,7 +3,6 @@ package app.dassana.core.contentmanager.model;
 public class SyncResult {
 
 
-  WorkflowProcessingResult workflowProcessingResult;
   boolean successful;
   boolean cacheHit;
   long contentLastSyncTimeMs;

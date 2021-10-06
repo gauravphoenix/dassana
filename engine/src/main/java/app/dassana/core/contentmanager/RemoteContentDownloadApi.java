@@ -1,10 +1,12 @@
 package app.dassana.core.contentmanager;
 
-import java.io.File;
-import java.util.Optional;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public interface RemoteContentDownloadApi {
 
-  Optional<File> downloadContent(Long lastDownloaded);
+  List<String> downloadContent();
+
+  Long getLastUpdated(boolean useCache) throws ExecutionException;
 
 }

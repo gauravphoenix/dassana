@@ -22,18 +22,25 @@ public class VersionHandler {
 
     String latestVersion = JsonPath.read(json, "$.Resources.DassanaEngineApi.Properties.Environment.Variables.version");
     String currentVersion = System.getenv().get("version");
+    if (currentVersion == null) {//this means that most like we are running the api server locally
+      VersionResponse versionResponse = new VersionResponse();
+      versionResponse.setInstalledVersion("0.0.0");
+      versionResponse.setMessage("local-dev-server");
+      versionResponse.setUpgradeAvailable(false);
+      return versionResponse;
+    }
 
     VersionResponse versionResponse = new VersionResponse();
     versionResponse.setInstalledVersion(currentVersion);
 
-    if(!"__version-to-be-replaced-by-cicd__".equals(currentVersion)){
+    if (!"__version-to-be-replaced-by-cicd__".equals(currentVersion)) {
       Semver installed = new Semver(currentVersion);
       Semver latest = new Semver(latestVersion);
 
       if (latest.isGreaterThan(installed)) {
         versionResponse.setUpgradeAvailable(true);
         versionResponse.setMessage("Hey there! An upgrade to Dassana is available. Please visit https://docs.dassana"
-                + ".io/docs/guides/ops/updating-dassana for instructions");
+            + ".io/docs/guides/ops/updating-dassana for instructions");
       } else {
         versionResponse.setUpgradeAvailable(false);
       }

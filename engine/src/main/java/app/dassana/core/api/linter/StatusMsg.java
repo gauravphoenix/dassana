@@ -1,10 +1,6 @@
 package app.dassana.core.api.linter;
 
-import app.dassana.core.launch.model.Severity;
 import com.google.gson.Gson;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class StatusMsg {
 

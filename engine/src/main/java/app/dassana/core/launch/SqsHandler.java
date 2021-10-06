@@ -1,7 +1,7 @@
 package app.dassana.core.launch;
 
 import app.dassana.core.contentmanager.ContentManagerApi;
-import app.dassana.core.launch.model.Request;
+import app.dassana.core.restapi.Run;
 import app.dassana.core.workflow.processor.RequestProcessor;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent.SQSMessage;
@@ -27,6 +27,7 @@ public class SqsHandler extends MicronautRequestHandler<SQSEvent, Void> {
   @Inject private ContentManagerApi contentManager;
   @Inject private RequestProcessor requestProcessor;
   @Inject private SqsClient sqsClient;
+  @Inject private Run run;
 
 
   @Override
@@ -36,16 +37,11 @@ public class SqsHandler extends MicronautRequestHandler<SQSEvent, Void> {
 
     for (SQSMessage message : sqsMessages) {
       try {
-        Request request = new Request(message.getBody());
-        request.setSkipPostProcessor(false);
-        request.setIncludeAlertInOutput(true);
-        request.setIncludeStepOutput(true);
-
-        requestProcessor.processRequest(request);
-
+        String body = message.getBody();
+        JSONObject jsonObject = new JSONObject(body);
+        run.processAlert(jsonObject, null, true, false);
       } catch (Exception e) {
         handleException(e, message.getBody());
-
       }
 
 

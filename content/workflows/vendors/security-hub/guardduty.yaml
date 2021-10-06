@@ -58,7 +58,3 @@ post-processor:
   steps:
     - id: update-security-hub-finding
       uses: SecurityHubUpdateFinding
-
-#output queue is disabled because we use a post-processor. Output queue is used when we don't have a bi-directional integration with the vendor
-output-queue:
-  enabled: false

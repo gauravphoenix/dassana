@@ -50,8 +50,3 @@ output:
     value: ."lookup".tags
   - name: alertClassification
     value: ."lookup".alertClassification
-
-publish-to-eventbridge: true
-
-output-queue:
-  enabled: true

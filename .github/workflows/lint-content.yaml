@@ -6,58 +6,6 @@ on:
     branches:
       - main
 jobs:
-  validate-schema:
-    permissions:
-      contents: read
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install jq
-        run: |
-          apt update && apt install sudo
-          sudo apt-get update && sudo apt-get install jq -y
-      - name: Install yq
-        run: |
-          sudo wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64
-          sudo chmod +x /usr/local/bin/yq
-      - name: Set Dassana Variables
-        id: dassana-variables
-        run: |
-          DASSANA_ACTIONS=`find content/actions -name "*.yaml" | xargs -I {} yq -j e {} | jq --sort-keys '.["id"]' | jq -r -s '. | @csv'`
-          echo 'DASSANA_ACTIONS<<EOF' >> $GITHUB_ENV
-          echo $DASSANA_ACTIONS >> $GITHUB_ENV
-          echo 'EOF' >> $GITHUB_ENV
-      - name: Find and Replace actions in dassana-vendor.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "DASSANA_ACTIONS"
-          replace: ${{ env.DASSANA_ACTIONS }}
-          include: content/schemas/dassana-vendor.yaml
-      - name: Find and Replace actions in dassana-general-context.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "DASSANA_ACTIONS"
-          replace: ${{ env.DASSANA_ACTIONS }}
-          include: content/schemas/dassana-general-context.yaml
-      - name: Find and Replace actions in dassana-resource-context.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "DASSANA_ACTIONS"
-          replace: ${{ env.DASSANA_ACTIONS }}
-          include: content/schemas/dassana-resource-context.yaml
-      - name: Find and Replace actions in dassana-policy-context.yaml
-        uses: jacobtomlinson/gha-find-replace@master
-        with:
-          find: "DASSANA_ACTIONS"
-          replace: ${{ env.DASSANA_ACTIONS }}
-          include: content/schemas/dassana-policy-context.yaml
-      - name: Validating actions
-        uses: dassana-io/yaml-schema-validator-github-action@v1.0.1
-        with:
-          schema: content/schemas/dassana-action.yaml
-          target: content/actions
-
   validate-content-dir-and-file-structure:
     permissions:
       contents: read

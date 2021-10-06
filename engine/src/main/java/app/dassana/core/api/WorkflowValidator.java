@@ -1,7 +1,12 @@
 package app.dassana.core.api;
 
-import app.dassana.core.api.linter.*;
+import app.dassana.core.api.linter.BaseLinter;
+import app.dassana.core.api.linter.GeneralLinter;
+import app.dassana.core.api.linter.NormalizeLinter;
+import app.dassana.core.api.linter.PolicyLinter;
+import app.dassana.core.api.linter.ResourceLinter;
 import app.dassana.core.contentmanager.ContentManager;
+import app.dassana.core.contentmanager.Parser;
 import app.dassana.core.launch.model.Message;
 import app.dassana.core.launch.model.Severity;
 import app.dassana.core.normalize.model.NormalizerWorkflow;
@@ -18,11 +23,9 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.ValidationException;
 import org.everit.json.schema.loader.SchemaLoader;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 @Singleton
@@ -30,11 +33,16 @@ public class WorkflowValidator {
 
   @Inject ContentManager contentManager;
   @Inject RuleMatch ruleMatch;
+  @Inject Parser parser;
   private SchemaLoader schemaLoader;
-  private NormalizeLinter normalizeLinter = new NormalizeLinter();
-  private GeneralLinter generalLinter = new GeneralLinter();
-  private ResourceLinter resourceLinter = new ResourceLinter();
-  private PolicyLinter policyLinter = new PolicyLinter();
+  private final NormalizeLinter normalizeLinter = new NormalizeLinter();
+  private final GeneralLinter generalLinter = new GeneralLinter();
+  private final ResourceLinter resourceLinter = new ResourceLinter();
+  private final PolicyLinter policyLinter = new PolicyLinter();
+
+  public WorkflowValidator() throws IOException {
+    initLinters();
+  }
 
   void validateJsonAgainstJsonSchema(String json, String jsonSchema) {
 
@@ -56,7 +64,7 @@ public class WorkflowValidator {
 
   }
 
-  private void initLinters() throws IOException{
+  private void initLinters() throws IOException {
     normalizeLinter.init();
     generalLinter.init();
     resourceLinter.init();
@@ -65,7 +73,7 @@ public class WorkflowValidator {
 
   private void processJson(BaseLinter linter, String json) throws IOException {
     List<Message> messages = linter.validate(json);
-    if(messages.size() > 0){
+    if (messages.size() > 0) {
       DassanaWorkflowValidationException workflowException = new DassanaWorkflowValidationException();
       workflowException.setMessages(messages);
       throw workflowException;
@@ -77,22 +85,22 @@ public class WorkflowValidator {
     Workflow workflow;
     try {
       JSONObject jsonObject = new JSONObject(workflowAsJson);
-      workflow = contentManager.getWorkflow(jsonObject);
-    } catch (JSONException e) {
+      workflow = parser.getWorkflow(jsonObject);
+    } catch (Exception e) {
       DassanaWorkflowValidationException dassanaWorkflowValidationException = new DassanaWorkflowValidationException();
       List<Message> messages = new LinkedList<>();
-      String[] fields = StringUtils.substringsBetween(e.getMessage() , "\"", "\"");
-      messages.add(new Message(String.format(ContextValidator.missingFieldsStr, fields), Severity.WARN));
+      messages.add(new Message(e.getMessage(), Severity.ERROR));
       dassanaWorkflowValidationException.setMessages(messages);
       throw dassanaWorkflowValidationException;
     }
+
+    //todo: clean it up: the schemas should be loaded on init and not everytime
 
     //let's validate against base schema first
     String baseSchema = IOUtils.toString(Thread.currentThread().getContextClassLoader()
         .getResourceAsStream("content/schemas/base-workflow-schema.json"), Charset.defaultCharset());
 
     validateJsonAgainstJsonSchema(workflowAsJson, baseSchema);
-    initLinters();
 
     if (workflow instanceof NormalizerWorkflow) {
       String normalizerSchema = IOUtils.toString(Thread.currentThread().getContextClassLoader()
