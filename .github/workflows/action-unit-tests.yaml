@@ -16,9 +16,12 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8.11
-      - name: Install dependencies
+      - name: Install dev dependencies
         run: pip install -r requirements_dev.txt
         working-directory: content/pkg/deps/python
+      - name: Install Dassana Action (i.e Lambda) specific dependencies
+        run: find . -name "requirements.txt" | xargs -I {} pip install -r {}
+        working-directory: content/actions
       - name: Run tests for common Python
         run: |
           python -m pytest --hypothesis-show-statistics
