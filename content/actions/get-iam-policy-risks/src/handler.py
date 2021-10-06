@@ -9,7 +9,7 @@ from cloudsplaining.scan.policy_document import PolicyDocument
 from cloudsplaining.shared.exclusions import Exclusions
 from cloudsplaining.output.policy_finding import PolicyFinding
 
-from dassana.common.cache import configure_ttl_cache
+from dassana.common.cache import configure_ttl_cache, configure_lru_cache
 
 with open('input.json', 'r') as schema:
     schema = load(schema)
@@ -25,7 +25,7 @@ def cloudsplaining_parse(policy_document, exclusions_config=None) -> PolicyFindi
 
 
 get_cached_client_aws = configure_ttl_cache(1024, 60)
-get_cached_findings = configure_ttl_cache(1024, 60)
+get_cached_findings = configure_lru_cache(1024)
 
 
 @validator(inbound_schema=schema)

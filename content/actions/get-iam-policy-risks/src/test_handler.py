@@ -1,3 +1,4 @@
+import time
 from unittest import TestCase
 
 from cloudsplaining.output.policy_finding import PolicyFinding
@@ -10,7 +11,6 @@ from handler import cloudsplaining_parse
 
 services = get_all_service_prefixes()
 actions = list(get_all_actions())
-get_cached_call = configure_ttl_cache()
 
 
 class IamPolicyRisks(TestCase):
@@ -55,7 +55,7 @@ class IamPolicyRisks(TestCase):
             ]
         }
 
-        results: PolicyFinding = cloudsplaining_parse(policy_document=doc)
+        results = cloudsplaining_parse(policy_document=doc)
         results_t = results.results
         assume(len(results_t.values()) > 0)
         filtered_vals = [value for key, value in results_t.items() if

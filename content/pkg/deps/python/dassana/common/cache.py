@@ -2,7 +2,7 @@ from hashlib import md5
 from json import dumps
 
 from aws_lambda_powertools.utilities.typing import LambdaContext
-from cachetools import TTLCache, cached
+from cachetools import TTLCache, cached, LRUCache
 
 
 class _HashedTuple(tuple):
@@ -88,6 +88,25 @@ def configure_ttl_cache(maxsize=1024, ttl=60, hash_op=generate_hash):
              f_1(f_2(name1=value1, ..., nameN=valueN), keywords: name1=value1, name2=value2, nameN=valueN) -> f_2
     """
     cache = TTLCache(maxsize=maxsize, ttl=ttl)
+
+    @cached(cache, key=hash_op)
+    def make_cached_call(func, *args, **kwargs):
+        return func(**kwargs)
+
+    return make_cached_call
+
+
+def configure_lru_cache(maxsize=1024, hash_op=generate_hash):
+    """
+    Decorator that initializes a LRU Cache which is utilized in any subsequent function calls with the hashing key
+    defined generate_hash.
+
+    :param maxsize: maximum size of the LRU cache
+    :param hash_op: function with hashing scheme applying to the same args that make_cached_call consumes
+    :return: a function with another function as its first parameter which calls on keyword arguments
+             f_1(f_2(name1=value1, ..., nameN=valueN), keywords: name1=value1, name2=value2, nameN=valueN) -> f_2
+    """
+    cache = LRUCache(maxsize=maxsize)
 
     @cached(cache, key=hash_op)
     def make_cached_call(func, *args, **kwargs):
