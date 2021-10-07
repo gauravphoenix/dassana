@@ -41,8 +41,8 @@ def handle(event: Dict[str, Any], context: LambdaContext):
     client = get_cached_client_aws(dassana_aws.create_aws_client, context=context, service='iam',
                                    region=event.get('region'))
 
-	POLICY_ARN = 'PolicyArn'
-	POLICY_NAME = 'PolicyName'
+    POLICY_ARN = 'PolicyArn'
+    POLICY_NAME = 'PolicyName'
 
     if resource_type == 'role':
         paginator = client.get_paginator('list_attached_role_policies')
