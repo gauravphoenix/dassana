@@ -41,6 +41,9 @@ def handle(event: Dict[str, Any], context: LambdaContext):
     client = get_cached_client_aws(dassana_aws.create_aws_client, context=context, service='iam',
                                    region=event.get('region'))
 
+	POLICY_ARN = 'PolicyArn'
+	POLICY_NAME = 'PolicyName'
+
     if resource_type == 'role':
         paginator = client.get_paginator('list_attached_role_policies')
 
@@ -53,8 +56,8 @@ def handle(event: Dict[str, Any], context: LambdaContext):
             for page in page_iterator:
                 for policy in page['AttachedPolicies']:
                     policies.append({
-                        'PolicyArn': policy['PolicyArn'],
-                        'PolicyName': policy['PolicyName']
+                        POLICY_ARN: policy[POLICY_ARN],
+                        POLICY_NAME: policy[POLICY_NAME]
                     })
         except Exception:
             pass
@@ -69,8 +72,8 @@ def handle(event: Dict[str, Any], context: LambdaContext):
             for page in page_iterator:
                 for policy_name in page['PolicyNames']:
                     policies.append({
-                        'PolicyName': policy_name,
-                        'PolicyArn': ''
+                        POLICY_ARN: '',
+                        POLICY_NAME: policy_name
                     })
         except Exception:
             pass
@@ -86,8 +89,8 @@ def handle(event: Dict[str, Any], context: LambdaContext):
             for page in page_iterator:
                 for policy in page['AttachedPolicies']:
                     policies.append({
-                        'PolicyArn': policy['PolicyArn'],
-                        'PolicyName': policy['PolicyName']
+                        POLICY_ARN: policy[POLICY_ARN],
+                        POLICY_NAME: policy[POLICY_NAME]
                     })
         except Exception:
             pass
@@ -101,32 +104,32 @@ def handle(event: Dict[str, Any], context: LambdaContext):
             for page in page_iterator:
                 for policy_name in page['PolicyNames']:
                     policies.append({
-                        'PolicyName': policy_name,
-                        'PolicyArn': ''
+                        POLICY_ARN: '',
+                        POLICY_NAME: policy_name
                     })
         except Exception:
             pass
 
     elif resource_type == 'policy':
         policies.append({
-            'PolicyArn': iam_arn,
-            'PolicyName': name
+            POLICY_ARN: iam_arn,
+            POLICY_NAME: name
         })
 
     for policy in policies:
-        if policy['PolicyArn'] != '':
+        if policy[POLICY_ARN] != '':
             policy_basic = client.get_policy(
-                PolicyArn=policy['PolicyArn']
+                PolicyArn=policy[POLICY_ARN]
             )
             policy_detailed = client.get_policy_version(
-                PolicyArn=policy['PolicyArn'],
+                PolicyArn=policy[POLICY_ARN],
                 VersionId=policy_basic['Policy']['DefaultVersionId']
             )
             policy_document = policy_detailed['PolicyVersion']['Document']
         else:
             policy_detailed = client.get_role_policy(
                 RoleName=name,
-                PolicyName=policy['PolicyName']
+                PolicyName=policy[POLICY_NAME]
             )
             policy_document = policy_detailed['PolicyDocument']
 
