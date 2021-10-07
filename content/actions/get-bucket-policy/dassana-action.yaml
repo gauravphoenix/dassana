@@ -1,0 +1,19 @@
+schema: 1.0
+id: GetBucketPolicy
+name: Get the bucket policy for a Amazon S3 bucket
+
+cloud-type: aws
+service: iam
+resource-type: policy
+
+runs-on: aws-lambda
+
+license:
+  url: https://www.apache.org/licenses/LICENSE-2.0
+  id: Apache
+author:
+  name: dassana
+  email: support@dassana.io
+compatible-type: policy-context
+labels:
+  - policy-context
