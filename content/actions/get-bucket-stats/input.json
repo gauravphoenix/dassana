@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GetBucketStats",
+  "type": "object",
+  "properties": {
+    "bucketName": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "bucketName"
+  ]
+}
