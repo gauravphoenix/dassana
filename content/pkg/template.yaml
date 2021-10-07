@@ -710,6 +710,18 @@ Resources:
         Fn::GetAtt: [DassanaActionsRole, Arn]
       Timeout: 60
 
+  GetBucketStats:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.handle
+      Runtime: python3.7
+      CodeUri: ../actions/get-bucket-stats
+      Layers:
+        - !Ref DassanaActionsPythonLayer
+      Role:
+        Fn::GetAtt: [DassanaActionsRole, Arn]
+      Timeout: 60
+
   PrismaCloudExtractor:
     Type: AWS::Serverless::Function
     Properties:
