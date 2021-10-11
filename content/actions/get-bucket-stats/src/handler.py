@@ -24,35 +24,32 @@ def get_storage_metric(client, bucket_name, metric_name, storage_type):
                                         ],
                                         Statistics=['Average'],
                                         Period=86400,
-                                        StartTime=(now-datetime.timedelta(days=1)).isoformat(),
+                                        StartTime=(now-datetime.timedelta(days=2)).isoformat(), # StartTime-EndTime = 2*period in case single period has no datapoints
                                         EndTime=(now-datetime.timedelta(days=0)).isoformat()
                                         )
     
-    return loads(dumps(response, default=str))
+    response = loads(dumps(response, default=str))
+    
+    try:
+        average_metric = response['Datapoints'][0]['Average']
+    except Exception:
+        average_metric = 0
+    
+    return average_metric
 
 @validator(inbound_schema=schema)
 def handle(event: Dict[str, Any], context: LambdaContext):
     cw_client = get_cached_client(dassana_aws.create_aws_client, context=context, service='cloudwatch',
                                region=event.get('region'))
     
-    cw_metric = get_storage_metric(cw_client, event.get('bucketName'),'BucketSizeBytes', 'StandardStorage')
-
-    try:
-        bucketSize = cw_metric['Datapoints'][0]['Average']
-    except Exception:
-        bucketSize = 0
+    bucket_size = get_storage_metric(cw_client, event.get('bucketName'),'BucketSizeBytes', 'StandardStorage')
     
     # Convert bucket size from bytes to GB
     for i in range(3):
-        bucketSize /= 1024
+        bucket_size /= 1024
     
-    bucketSize = round(bucketSize, 6)
+    bucket_size = round(bucket_size, 6)
     
-    cw_metric = get_storage_metric(cw_client, event.get('bucketName'), 'NumberOfObjects', 'AllStorageTypes')
+    num_objects = get_storage_metric(cw_client, event.get('bucketName'), 'NumberOfObjects', 'AllStorageTypes')
     
-    try:
-        numberOfObjects = cw_metric['Datapoints'][0]['Average']
-    except Exception:
-        numberOfObjects = 0
-    
-    return {"result": {"bucketSizeInGB": bucketSize, "numberOfObjects": numberOfObjects}}
+    return {"result": {"bucketSizeInGB": bucket_size, "numberOfObjects": num_objects}}
