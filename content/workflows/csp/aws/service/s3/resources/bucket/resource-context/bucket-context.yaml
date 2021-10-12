@@ -1,0 +1,39 @@
+schema: 1
+type: resource-context
+
+id: s3-bucket-context
+name: S3 bucket resource context
+
+csp: aws
+service: s3
+resource-type: bucket
+
+filters:
+  - match-type: any
+    rules:
+      - .resourceType == "bucket" and .csp =="aws"
+
+steps:
+  - id: bucketStats
+    uses: GetBucketStats
+    with:
+      - name: bucketName
+        value: .resourceId
+      - name: region
+        value: .region
+
+risk-config:
+  default-risk: ""
+  rules:
+    - name: Bucket is of significant size
+      condition: .bucketStats.bucketSizeInGB > 10 or .bucketStats.numberOfObjects > 1000
+      risk: high
+
+    - name: Bucket is of medium size
+      condition: .bucketStats.bucketSizeInGB > 5 or .bucketStats.numberOfObjects > 500
+      risk: medium
+
+    - name: Bucket is of nominal size
+      condition: .bucketStats.bucketSizeInGB > 0 or .bucketStats.numberOfObjects > 0
+      risk: low
+

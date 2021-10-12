@@ -19,3 +19,4 @@ Returns size-related statistics for an Amazon S3 Bucket
   }
 }
 ```
+Note: Bucket metrics may take up to 24 hours to appear in Cloudwatch after creation

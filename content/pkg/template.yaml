@@ -713,7 +713,7 @@ Resources:
   GetBucketStats:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handler.handle
+      Handler: src/handler.handle
       Runtime: python3.7
       CodeUri: ../actions/get-bucket-stats
       Layers:
@@ -776,7 +776,7 @@ Resources:
   GetBucketPolicy:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: handler.handle
+      Handler: src/handler.handle
       Runtime: python3.7
       CodeUri: ../actions/get-bucket-policy
       Layers:
