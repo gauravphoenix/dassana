@@ -4,8 +4,19 @@ micronaut:
       enabled: true
       configurations:
         web:
+          allowedMethods:
+            - POST
+            - PUT
+            - GET
+            - OPTIONS
+            - DELETE
+          maxAge: 3600
+
           exposedHeaders:
             - x-workflow-is-default
+            - Content-Type
+            - x-api-key
+            - x-dassana-cache
 
   application:
     name: engine

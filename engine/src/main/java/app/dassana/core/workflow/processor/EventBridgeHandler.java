@@ -1,11 +1,10 @@
 package app.dassana.core.workflow.processor;
 
 import app.dassana.core.launch.model.ProcessingResponse;
+import app.dassana.core.launch.model.RunMode;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.services.eventbridge.EventBridgeClient;
 import software.amazon.awssdk.services.eventbridge.model.PutEventsRequest;
 import software.amazon.awssdk.services.eventbridge.model.PutEventsRequestEntry;
@@ -20,16 +19,18 @@ public class EventBridgeHandler {
 
   public static final String NORMALIZER_NOT_FOUND = "normalizer_not_found";
 
-  private static final Logger logger = LoggerFactory.getLogger(EventBridgeHandler.class);
-
-
   public void handleEventBridge(ProcessingResponse processingResponse, String normalizerId) {
 
     if (StringUtils.isEmpty(normalizerId)) {
       normalizerId = NORMALIZER_NOT_FOUND;
     }
 
-    if (StringUtils.isNotEmpty(dassanaEventBridgeBusName)) {
+    RunMode runMode = processingResponse.getRequest().getRunMode();
+    if (runMode == null) {
+      runMode = RunMode.TEST;
+    }
+
+    if (StringUtils.isNotEmpty(dassanaEventBridgeBusName) && runMode.equals(RunMode.PROD)) {
       PutEventsRequestEntry putEventsRequestEntry = PutEventsRequestEntry.builder()
           .eventBusName(dassanaEventBridgeBusName)
           .detail(processingResponse.getDecoratedJson())
@@ -44,8 +45,6 @@ public class EventBridgeHandler {
         throw new RuntimeException(
             "Unable to send events to event-bridge due to error: ".concat(putEventsResponse.toString()));
       }
-    } else {
-      logger.warn("dassanaEventBridgeBusName not set as environment variable");
     }
 
 

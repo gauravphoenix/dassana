@@ -1,6 +1,7 @@
 package app.dassana.core.launch;
 
 import app.dassana.core.contentmanager.ContentManagerApi;
+import app.dassana.core.launch.model.RunMode;
 import app.dassana.core.restapi.Run;
 import app.dassana.core.workflow.processor.RequestProcessor;
 import com.amazonaws.services.lambda.runtime.events.SQSEvent;
@@ -39,7 +40,7 @@ public class SqsHandler extends MicronautRequestHandler<SQSEvent, Void> {
       try {
         String body = message.getBody();
         JSONObject jsonObject = new JSONObject(body);
-        run.processAlert(jsonObject, null, true, false);
+        run.processAlert(jsonObject, null, true, RunMode.PROD,true);
       } catch (Exception e) {
         handleException(e, message.getBody());
       }

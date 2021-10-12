@@ -116,6 +116,7 @@ public class Decorator {
     }
 
     messageBody.put(DASSANA_KEY, dassanaMap);
+    messageBody.remove("workflows");
 
     return messageBody.toString();
 

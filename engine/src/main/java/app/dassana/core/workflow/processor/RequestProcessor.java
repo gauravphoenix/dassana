@@ -97,7 +97,7 @@ public class RequestProcessor {
   public ProcessingResponse processRequest(final Request request) throws Exception {
 
     setWorkflows(request);
-    ProcessingResponse processingResponse = new ProcessingResponse();
+    ProcessingResponse processingResponse = new ProcessingResponse(request);
 
     logger.info("Processing input {}", StringyThings.removeNewLines(request.getInputJson()));
 

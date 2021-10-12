@@ -1,0 +1,7 @@
+{
+  "foo": "bar",
+  "dassana": {
+    "severity": "WARN",
+    "msg": "Dassana couldn't normalize the alert you sent, please verify normalizers filter config"
+  }
+}

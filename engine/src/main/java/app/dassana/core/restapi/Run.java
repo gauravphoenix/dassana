@@ -13,6 +13,7 @@ import app.dassana.core.contentmanager.Parser;
 import app.dassana.core.launch.model.Message;
 import app.dassana.core.launch.model.ProcessingResponse;
 import app.dassana.core.launch.model.Request;
+import app.dassana.core.launch.model.RunMode;
 import app.dassana.core.launch.model.Severity;
 import app.dassana.core.launch.model.WorkflowNotFoundException;
 import app.dassana.core.normalize.model.NormalizerWorkflow;
@@ -28,14 +29,18 @@ import app.dassana.core.workflow.processor.RequestProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import io.micronaut.core.annotation.Nullable;
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Header;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
@@ -59,85 +64,101 @@ public class Run {
 
 
   @Post
-  public String processAlert(@Body Object input, @Nullable @QueryValue("workflowId") String workFlowId,
+  public HttpResponse<String> processAlert(@Body Object input, @Nullable @QueryValue("workflowId") String workFlowId,
       @Nullable @QueryValue("includeInputRequest") Boolean includeInputRequest,
+      @Nullable @QueryValue("mode") RunMode mode,
       @Nullable @Header("x-dassana-cache") Boolean useCache) throws Exception {
 
-    //micronaut marshals the requests differently when invoked via AWS API Gateway
-    String inputBody;
-    if (input.getClass() == LinkedHashMap.class) {
-      inputBody = gson.toJson(input);
-    } else {
-      inputBody = input.toString();
-    }
-
-    Request request = new Request(inputBody);
-    request.setUseCache(useCache == null || useCache);
-
-    if (includeInputRequest == null) {
-      includeInputRequest = false;
-    }
-    request.setIncludeOriginalAlert(includeInputRequest);
-
-    if (StringUtils.isNotEmpty(inputBody)) {
-      JSONObject inputJsonObj = new JSONObject(inputBody);
-      JSONArray workflows = inputJsonObj.optJSONArray("workflows");
-      if (workflows != null && workflows.length() > 0) {
-        List<String> workflowStr = new LinkedList<>();
-        for (int i = 0; i < workflows.length(); i++) {
-          workflowStr.add(workflows.getString(i));
-        }
-        request.setAdditionalWorkflowYamls(workflowStr);
-      }
-
-    }
-
-    JsonyThings.throwExceptionIfNotValidJsonObj(inputBody);
-
-    if (StringUtils.isNotEmpty(workFlowId)) {
-      request.setWorkflowId(workFlowId);
-      requestProcessor.setWorkflows(request);
-
-      Optional<Workflow> first = request.getWorkflowSetToRun().stream().findFirst();
-
-      if (first.isPresent()) {
-        Workflow workflow = first.get();
-        Optional<WorkflowOutputWithRisk> workflowOutputWithRisk = Optional.empty();
-        //todo: generify this
-        if (workflow.getClass().getName().contentEquals(NormalizerWorkflow.class.getName())) {
-          workflowOutputWithRisk = workflowRunner
-              .runWorkFlow(NormalizerWorkflow.class, request, request.getInputJson());
-        } else if (workflow.getClass().getName().contentEquals(GeneralContext.class.getName())) {
-          workflowOutputWithRisk = workflowRunner.runWorkFlow(GeneralContext.class, request,
-              request.getInputJson());
-        } else if (workflow.getClass().getName().contentEquals(ResourceContext.class.getName())) {
-          workflowOutputWithRisk = workflowRunner.runWorkFlow(ResourceContext.class, request,
-              request.getInputJson());
-        } else if (workflow.getClass().getName().contentEquals(PolicyContext.class.getName())) {
-          workflowOutputWithRisk = workflowRunner.runWorkFlow(PolicyContext.class, request,
-              request.getInputJson());
-        }
-
-        if (workflowOutputWithRisk.isPresent()) {
-          WorkflowOutputWithRisk outputWithRisk = workflowOutputWithRisk.get();
-          outputWithRisk.setStepOutput(outputWithRisk.getStepOutput());
-          outputWithRisk.setWorkflowId(outputWithRisk.getWorkflowId());
-          return gson.toJson(outputWithRisk);
-        } else {//this shouldn't happen but still to be safe..
-          return "{}";
-        }
-
-
+    try {
+      //micronaut marshals the requests differently when invoked via AWS API Gateway
+      String inputBody;
+      if (input.getClass() == LinkedHashMap.class) {
+        inputBody = gson.toJson(input);
+        //in case we receive json array, we try to take the first element out of the array and assume it to be an
+        // alert. (this is the case with GuardDuty raw findings (as opposed to GuardDuty findings sent to SecurityHub)
+      } else if (input.getClass().getName().contentEquals("java.util.ArrayList")) {
+        String arrayJson = gson.toJson(input);
+        JSONArray jsonArray = new JSONArray(arrayJson);
+        JSONObject jsonObject = jsonArray.getJSONObject(0);
+        inputBody = jsonObject.toString();
       } else {
-        throw new WorkflowNotFoundException(String.format("Sorry, we couldn't locate %s workflow", workFlowId));
+        inputBody = input.toString();
       }
 
+      Request request = new Request(inputBody);
+      request.setRunMode(Objects.requireNonNullElse(mode, RunMode.TEST));
+      request.setUseCache(useCache == null || useCache);
 
+      if (includeInputRequest == null) {
+        includeInputRequest = false;
+      }
+      request.setIncludeOriginalAlert(includeInputRequest);
+
+      if (StringUtils.isNotEmpty(inputBody)) {
+        JSONObject inputJsonObj = new JSONObject(inputBody);
+        JSONArray workflows = inputJsonObj.optJSONArray("workflows");
+        if (workflows != null && workflows.length() > 0) {
+          List<String> workflowStr = new LinkedList<>();
+          for (int i = 0; i < workflows.length(); i++) {
+            workflowStr.add(workflows.getString(i));
+          }
+          request.setAdditionalWorkflowYamls(workflowStr);
+        }
+
+      }
+
+      JsonyThings.throwExceptionIfNotValidJsonObj(inputBody);
+
+      if (StringUtils.isNotEmpty(workFlowId)) {
+        request.setWorkflowId(workFlowId);
+        requestProcessor.setWorkflows(request);
+
+        Optional<Workflow> first = request.getWorkflowSetToRun().stream().findFirst();
+
+        if (first.isPresent()) {
+          Workflow workflow = first.get();
+          Optional<WorkflowOutputWithRisk> workflowOutputWithRisk = Optional.empty();
+          //todo: generify this
+          if (workflow.getClass().getName().contentEquals(NormalizerWorkflow.class.getName())) {
+            workflowOutputWithRisk = workflowRunner
+                .runWorkFlow(NormalizerWorkflow.class, request, request.getInputJson());
+          } else if (workflow.getClass().getName().contentEquals(GeneralContext.class.getName())) {
+            workflowOutputWithRisk = workflowRunner.runWorkFlow(GeneralContext.class, request,
+                request.getInputJson());
+          } else if (workflow.getClass().getName().contentEquals(ResourceContext.class.getName())) {
+            workflowOutputWithRisk = workflowRunner.runWorkFlow(ResourceContext.class, request,
+                request.getInputJson());
+          } else if (workflow.getClass().getName().contentEquals(PolicyContext.class.getName())) {
+            workflowOutputWithRisk = workflowRunner.runWorkFlow(PolicyContext.class, request,
+                request.getInputJson());
+          }
+
+          if (workflowOutputWithRisk.isPresent()) {
+            WorkflowOutputWithRisk outputWithRisk = workflowOutputWithRisk.get();
+            outputWithRisk.setStepOutput(outputWithRisk.getStepOutput());
+            outputWithRisk.setWorkflowId(outputWithRisk.getWorkflowId());
+            return HttpResponse.ok().body(gson.toJson(outputWithRisk));
+          } else {//this shouldn't happen but still to be safe..
+            return HttpResponse.ok().body("{}");
+          }
+
+
+        } else {
+          throw new WorkflowNotFoundException(String.format("Sorry, we couldn't locate %s workflow", workFlowId));
+        }
+
+
+      }
+
+      ProcessingResponse processingResponse = requestProcessor.processRequest(request);
+      String decoratedJson = processingResponse.getDecoratedJson();
+      return HttpResponse.ok().body(handleHints(decoratedJson, request));
+    } catch (Exception e) {
+      StringWriter sw = new StringWriter();
+      PrintWriter pw = new PrintWriter(sw);
+      e.printStackTrace(pw);
+      return HttpResponse.badRequest().body(sw.toString());
     }
-
-    ProcessingResponse processingResponse = requestProcessor.processRequest(request);
-    String decoratedJson = processingResponse.getDecoratedJson();
-    return handleHints(decoratedJson, request);
 
 
   }
@@ -194,23 +215,7 @@ public class Run {
     }
 
     if (request.isIncludeOriginalAlert()) {
-
-      //we wrap the resonse so that it looks like this-
-
-      /*{
-        "alert": "{}",
-        "dassana": {}
-      }*/
-
-      //get dassana object
-      JSONObject dassanaJsonObj = jsonObject.getJSONObject(DASSANA_KEY);
-      jsonObject.remove(DASSANA_KEY);
-      //now we are left with original json
-      JSONObject jsonObjectToReturn = new JSONObject();
-      jsonObjectToReturn.put("alert", jsonObject);
-      jsonObjectToReturn.put(DASSANA_KEY, dassanaJsonObj);
-
-      return jsonObjectToReturn.toString();
+      return jsonObject.toString();
     } else {
       //we send the response like this (omitting the alert key)-
 

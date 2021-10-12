@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GetBucketPolicy",
+  "type": "object",
+  "properties": {
+    "bucketName": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "bucketName"
+  ]
+}

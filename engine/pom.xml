@@ -178,6 +178,7 @@
 
     <!-- Begin Micronaut dependencies -->
 
+
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-http-client</artifactId>
@@ -230,6 +231,17 @@
 
     <!-- Begin testing related dependencies -->
 
+
+    <dependency>
+      <groupId>io.micronaut.test</groupId>
+      <artifactId>micronaut-test-spock</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-inject-groovy-test</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>

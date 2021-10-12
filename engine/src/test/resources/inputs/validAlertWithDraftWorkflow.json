@@ -6,6 +6,6 @@
     "resource-info": "responses/just-normalization.json"
   },
   "workflows": [
-    "schema: 1.0\ntype: normalize\nvendor-id: foo-cloud\nid: foo-cloud-normalize\n\nfilters:\n  - match-type: all\n    rules:\n      - .foo and .badThingJustHappened.description\n      - .badThingJustHappened.description | contains (\"fubar\")\n\nsteps:\n  - id: resource-info\n    uses: DemoCloudNormalizer\n\noutput:\n  - name: alertId\n    value: .\"resource-info\".alertId\n  - name: canonicalId\n    value: .\"resource-info\".canonicalId\n  - name: vendorPolicy\n    value: .\"resource-info\".vendorPolicy\n  - name: csp\n    value: .\"resource-info\".csp\n  - name: resourceContainer\n    value: .\"resource-info\".resourceContainer\n  - name: region\n    value: .\"resource-info\".region\n  - name: service\n    value: .\"resource-info\".service\n  - name: resourceType\n    value: .\"resource-info\".resourceType\n  - name: resourceId\n    value: .\"resource-info\".resourceId\n\noutput-queue:\n  enabled: true\n"
+    "schema: 1 \ntype: normalize \n\nvendor-id: foo-cloud-cspm-vendor\nid: foo-cloud-normalize\n\nfilters: \n  - match-type: all\n    rules: # these are JQ expressions which must return either true or false\n      - .badThingJustHappened and .badThingJustHappened.description\n      - .badThingJustHappened.description | contains (\"fubar\")\noutput:\n  - name: vendorId\n    value: blah\n    value-type: STRING"
   ]
 }

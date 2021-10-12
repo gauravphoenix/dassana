@@ -1,4 +1,4 @@
-[![Generic badge](https://img.shields.io/badge/license-apache2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0) [![Generic badge](https://img.shields.io/badge/docs-blue.svg)](https://docs.dassana.io/) [![Coverage Status](https://coveralls.io/repos/github/dassana-io/dassana/badge.svg?branch=main)](https://coveralls.io/github/dassana-io/dassana?branch=main)
+[![Generic badge](https://img.shields.io/badge/license-apache2.0-green.svg)](https://www.apache.org/licenses/LICENSE-2.0) [![Generic badge](https://img.shields.io/badge/docs-blue.svg)](https://docs.dassana.io/) 
 
 
 

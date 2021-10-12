@@ -1,0 +1,33 @@
+{
+  "test-hint": {
+    "resource-info": "responses/just-normalization.json"
+  },
+  "dassana": {
+    "resource-context": {
+      "severity": "INFO",
+      "msg": "Sorry, but no resource-context workflow ran for the given alert. Please check filter config"
+    },
+    "policy-context": {
+      "severity": "INFO",
+      "msg": "Sorry, but no policy-context workflow ran for the given alert. Please check filter config"
+    },
+    "normalize": {
+      "output": {
+        "vendorId": "blah"
+      },
+      "step-output": [],
+      "workflowType": "normalize",
+      "workflowId": "foo-cloud-normalize"
+    },
+    "general-context": {
+      "severity": "INFO",
+      "msg": "Sorry, but no general-context workflow ran for the given alert. Please check filter config"
+    }
+  },
+  "workflows": [
+    "schema: 1 \ntype: normalize \n\nvendor-id: foo-cloud-cspm-vendor\nid: foo-cloud-normalize\n\nfilters: \n  - match-type: all\n    rules: # these are JQ expressions which must return either true or false\n      - .badThingJustHappened and .badThingJustHappened.description\n      - .badThingJustHappened.description | contains (\"fubar\")\noutput:\n  - name: vendorId\n    value: blah\n    value-type: STRING"
+  ],
+  "badThingJustHappened": {
+    "description": "fubar"
+  }
+}

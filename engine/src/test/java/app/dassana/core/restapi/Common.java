@@ -1,8 +1,5 @@
 package app.dassana.core.restapi;
 
-import static app.dassana.core.contentmanager.Parser.MISSING_NORMALIZATION_MSG;
-
-import app.dassana.core.Helper;
 import app.dassana.core.contentmanager.RemoteContentDownloadApi;
 import app.dassana.core.contentmanager.infra.S3Manager;
 import app.dassana.core.launch.model.ProcessingResponse;
@@ -16,57 +13,18 @@ import app.dassana.core.workflow.model.WorkflowOutputWithRisk;
 import app.dassana.core.workflow.processor.EventBridgeHandler;
 import app.dassana.core.workflow.processor.PostProcessor;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.s3.S3Client;
 
-@MicronautTest
-class RunTest {
-
-  @Inject Run run;
-
-  @Test
-  void basicTest() throws Exception {
-    String inputFromFile = Helper.getInputFromFile("validJsonButNotAnAlert1.json");
-    String processAlert = run.processAlert(new JSONObject(inputFromFile), null, null, null);
-    JSONObject jsonObject = new JSONObject(processAlert);
-    JSONObject dassana = jsonObject.getJSONObject("dassana");
-    String msg = dassana.getString("msg");
-    Assertions.assertTrue(msg.contentEquals(MISSING_NORMALIZATION_MSG));
-
-    inputFromFile = Helper.getInputFromFile("validJsonButNotAnAlert2.json");
-    processAlert = run.processAlert(new JSONObject(inputFromFile), null, null, null);
-    jsonObject = new JSONObject(processAlert);
-    dassana = jsonObject.getJSONObject("dassana");
-    msg = dassana.getString("msg");
-    Assertions.assertTrue(msg.contentEquals(MISSING_NORMALIZATION_MSG));
-
-  }
-
-  @Test
-  public void testSecurityHubAlert() throws Exception {
-
-    String inputFromFile = Helper.getInputFromFile("validSecurityHubAlert.json");
-    String processAlert = run.processAlert(new JSONObject(inputFromFile), null, null, null);
-    JSONObject jsonObject = new JSONObject(processAlert);
-    JSONObject dassana = jsonObject.getJSONObject("dassana");
-
-    String workflowId = dassana.getJSONObject("normalize").getString("workflowId");
-    Assertions.assertTrue(workflowId.contentEquals("aws-config-via-security-hub"));
-
-  }
-
+public class Common {
   @Singleton
   @Replaces(PostProcessor.class)
   public static class FakePostProcessor extends PostProcessor {
@@ -168,6 +126,5 @@ class RunTest {
       return 0L;
     }
   }
-
 
 }

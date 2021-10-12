@@ -4,8 +4,21 @@ import app.dassana.core.normalize.model.NormalizerWorkflow;
 
 public class ProcessingResponse {
 
+  public ProcessingResponse(Request request) {
+    this.request = request;
+  }
+
+  Request request;
   String decoratedJson;
   NormalizerWorkflow normalizerWorkflow;
+
+  public Request getRequest() {
+    return request;
+  }
+
+  public void setRequest(Request request) {
+    this.request = request;
+  }
 
   public NormalizerWorkflow getNormalizerWorkflow() {
     return normalizerWorkflow;

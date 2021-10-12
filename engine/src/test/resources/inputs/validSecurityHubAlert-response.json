@@ -1,0 +1,250 @@
+{
+  "test-hint": {
+    "resource-info": "responses/normalization.json"
+  },
+  "detail-type": "Security Hub Findings - Imported",
+  "dassana": {
+    "resource-context": {
+      "severity": "INFO",
+      "msg": "Sorry, but no resource-context workflow ran for the given alert. Please check filter config"
+    },
+    "policy-context": {
+      "output": {},
+      "step-output": [
+        {
+          "list-of-attached-eni": {
+            "result": [
+              {
+                "Status": "in-use",
+                "Description": "Primary network interface",
+                "PrivateDnsName": "ip-172-16-4-235.ec2.interntal",
+                "PrivateIpAddress": "172.16.4.235",
+                "PrivateIpAddresses": [
+                  {
+                    "Association": {
+                      "PublicIp": "3.87.52.250",
+                      "IpOwnerId": "amazon",
+                      "PublicDnsName": "ec2-3-87-52-250.compute-1.amazonaws.com"
+                    },
+                    "PrivateDnsName": "ip-172-16-4-235.ec2.internal",
+                    "PrivateIpAddress": "172.16.4.235",
+                    "Primary": true
+                  }
+                ],
+                "AvailabilityZone": "us-east-1a",
+                "Attachment": {
+                  "Status": "attached",
+                  "InstanceId": "i-054474987a390f341",
+                  "DeviceIndex": 0,
+                  "NetworkCardIndex": 0,
+                  "AttachmentId": "eni-attach-04d92d000ef478797",
+                  "InstanceOwnerId": "363265257036",
+                  "AttachTime": "2021-03-14 01:08:43+00:00",
+                  "DeleteOnTermination": true
+                },
+                "Ipv6Addresses": [],
+                "SubnetId": "subnet-0fff96f44f61be3c8",
+                "MacAddress": "12:27:ba:72:a3:bf",
+                "NetworkInterfaceId": "eni-0ce198f0294017852",
+                "RequesterManaged": false,
+                "SourceDestCheck": true,
+                "InterfaceType": "interface",
+                "Association": {
+                  "PublicIp": "3.87.52.250",
+                  "IpOwnerId": "amazon",
+                  "PublicDnsName": "ec2-3-87-52-250.compute-1.amazonaws.com"
+                },
+                "OwnerId": "363265257036",
+                "VpcId": "vpc-02400cbe81d28eadc",
+                "Groups": [
+                  {
+                    "GroupName": "bastionHost",
+                    "GroupId": "sg-0c78a9d8a495828ad"
+                  }
+                ],
+                "TagSet": []
+              }
+            ]
+          }
+        }
+      ],
+      "workflowType": "policy-context",
+      "risk": {
+        "condition": ".\"list-of-attached-eni\".result| length > 0",
+        "riskValue": "high",
+        "name": "are-enis-attached-to-sg"
+      },
+      "workflowId": "security-group-is-overly-permissive"
+    },
+    "normalize": {
+      "output": {
+        "csp": "aws",
+        "resourceId": "sg-0c78a9d8a495828ad",
+        "service": "ec2",
+        "vendorPolicy": "restricted-ssh",
+        "vendorId": "aws-config",
+        "alertId": "arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0/4.1/finding/4991510f-77f2-4c48-bbb9-f51697bffa3d",
+        "resourceContainer": "363265257036",
+        "region": "us-east-1",
+        "tags": [
+          {
+            "name": "env",
+            "value": "dev"
+          }
+        ]
+      },
+      "step-output": [
+        {
+          "lookup": {
+            "service": "ec2"
+          }
+        },
+        {
+          "resource-info": {
+            "csp": "aws",
+            "resourceId": "sg-0c78a9d8a495828ad",
+            "service": "ec2",
+            "vendorPolicy": "restricted-ssh",
+            "vendorId": "aws-config",
+            "resourceContainer": "363265257036",
+            "alertId": "arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0/4.1/finding/4991510f-77f2-4c48-bbb9-f51697bffa3d",
+            "region": "us-east-1",
+            "arn": "arn:aws:ec2:us-east-1:363265257036:security-group/sg-0c78a9d8a495828ad",
+            "resourceType": "security-group"
+          }
+        },
+        {
+          "getTags": [
+            {
+              "name": "env",
+              "value": "dev"
+            }
+          ]
+        }
+      ],
+      "workflowType": "normalize",
+      "workflowId": "aws-config-via-security-hub"
+    },
+    "general-context": {
+      "output": {
+        "environment": "dev"
+      },
+      "step-output": [],
+      "workflowType": "general-context",
+      "risk": {
+        "condition": ".tags | any( select(.name | test(\"env\" ; \"ix\")) | select(.value | test(\"dev\" ; \"ix\")))",
+        "riskValue": "low",
+        "name": "dev environment risk is low"
+      },
+      "workflowId": "general-context-aws"
+    }
+  },
+  "resources": [
+    "arn:aws:securityhub:us-east-1::product/aws/securityhub/arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0/2.9/finding/877dd463-88ee-4750-a192-2ffdaba013da"
+  ],
+  "source": "aws.securityhub",
+  "time": "2021-07-14T03:54:44Z",
+  "detail": {
+    "findings": [
+      {
+        "ProductArn": "arn:aws:securityhub:us-east-1::product/aws/securityhub",
+        "Types": [
+          "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+        ],
+        "Description": "Security groups provide stateful filtering of ingress/egress network traffic to AWS resources. It is recommended that no security group allows unrestricted ingress access to port 22.",
+        "SchemaVersion": "2018-10-08",
+        "ProductName": "Security Hub",
+        "Compliance": {
+          "Status": "FAILED"
+        },
+        "GeneratorId": "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0/rule/4.1",
+        "FirstObservedAt": "2021-07-21T23:07:07.146Z",
+        "CreatedAt": "2021-07-21T23:07:07.146Z",
+        "RecordState": "ACTIVE",
+        "Title": "4.1 Ensure no security groups allow ingress from 0.0.0.0/0 to port 22",
+        "Workflow": {
+          "Status": "NEW"
+        },
+        "LastObservedAt": "2021-08-05T21:54:32.368Z",
+        "Severity": {
+          "Normalized": 70,
+          "Label": "HIGH",
+          "Product": 70,
+          "Original": "HIGH"
+        },
+        "UpdatedAt": "2021-08-05T21:54:28.575Z",
+        "CompanyName": "AWS",
+        "FindingProviderFields": {
+          "Types": [
+            "Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+          ],
+          "Severity": {
+            "Label": "HIGH",
+            "Original": "HIGH"
+          }
+        },
+        "WorkflowState": "NEW",
+        "ProductFields": {
+          "RelatedAWSResources:0/type": "AWS::Config::ConfigRule",
+          "Resources:0/Id": "arn:aws:ec2:us-east-1:363265257036:security-group/sg-0c78a9d8a495828ad",
+          "RuleId": "4.1",
+          "RecommendationUrl": "https://docs.aws.amazon.com/console/securityhub/standards-cis-4.1/remediation",
+          "aws/securityhub/ProductName": "Security Hub",
+          "StandardsControlArn": "arn:aws:securityhub:us-east-1:363265257036:control/cis-aws-foundations-benchmark/v/1.2.0/4.1",
+          "aws/securityhub/CompanyName": "AWS",
+          "StandardsGuideSubscriptionArn": "arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0",
+          "StandardsGuideArn": "arn:aws:securityhub:::ruleset/cis-aws-foundations-benchmark/v/1.2.0",
+          "RelatedAWSResources:0/name": "securityhub-restricted-ssh-26b848ae",
+          "aws/securityhub/FindingId": "arn:aws:securityhub:us-east-1::product/aws/securityhub/arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0/4.1/finding/4991510f-77f2-4c48-bbb9-f51697bffa3d"
+        },
+        "AwsAccountId": "363265257036",
+        "Region": "us-east-1",
+        "Id": "arn:aws:securityhub:us-east-1:363265257036:subscription/cis-aws-foundations-benchmark/v/1.2.0/4.1/finding/4991510f-77f2-4c48-bbb9-f51697bffa3d",
+        "Remediation": {
+          "Recommendation": {
+            "Text": "For directions on how to fix this issue, please consult the AWS Security Hub CIS documentation.",
+            "Url": "https://docs.aws.amazon.com/console/securityhub/standards-cis-4.1/remediation"
+          }
+        },
+        "Resources": [
+          {
+            "Partition": "aws",
+            "Type": "AwsEc2SecurityGroup",
+            "Details": {
+              "AwsEc2SecurityGroup": {
+                "GroupName": "bastionHost",
+                "OwnerId": "363265257036",
+                "VpcId": "vpc-02400cbe81d28eadc",
+                "IpPermissions": [
+                  {
+                    "FromPort": 22,
+                    "ToPort": 22,
+                    "IpProtocol": "tcp",
+                    "IpRanges": [
+                      {
+                        "CidrIp": "0.0.0.0/0"
+                      }
+                    ]
+                  }
+                ],
+                "IpPermissionsEgress": [
+                  {
+                    "IpProtocol": "-1",
+                    "IpRanges": [
+                      {
+                        "CidrIp": "0.0.0.0/0"
+                      }
+                    ]
+                  }
+                ],
+                "GroupId": "sg-0c78a9d8a495828ad"
+              }
+            },
+            "Region": "us-east-1",
+            "Id": "arn:aws:ec2:us-east-1:363265257036:security-group/sg-0c78a9d8a495828ad"
+          }
+        ]
+      }
+    ]
+  }
+}

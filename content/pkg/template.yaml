@@ -760,6 +760,32 @@ Resources:
         Fn::GetAtt: [DassanaActionsRole, Arn]
       Timeout: 60
 
+  GetIAMPolicyRisks:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.handle
+      Runtime: python3.7
+      CodeUri: ../actions/get-iam-policy-risks
+      MemorySize: 2056
+      Layers:
+        - !Ref DassanaActionsPythonLayer
+      Role:
+        Fn::GetAtt: [DassanaActionsRole, Arn]
+      Timeout: 60
+
+  GetBucketPolicy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: handler.handle
+      Runtime: python3.7
+      CodeUri: ../actions/get-bucket-policy
+      Layers:
+        - !Ref DassanaActionsPythonLayer
+      Role:
+        Fn::GetAtt: [DassanaActionsRole, Arn]
+      Timeout: 60
+
+
 ### End Dassana Actions ###
 
 Outputs:
@@ -774,3 +800,4 @@ Outputs:
     Value: !Sub https://console.aws.amazon.com/apigateway/home?region=${AWS::Region}
     Export:
       Name: !Join ["", [{ "Ref": "AWS::StackName" }, "ApiKey"]]
+

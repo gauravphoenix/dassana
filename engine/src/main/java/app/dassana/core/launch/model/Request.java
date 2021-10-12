@@ -15,6 +15,15 @@ public class Request {
   private List<String> additionalWorkflowYamls;
   private String workflowId; //if specified, only this workflow will run
   private boolean useCache=false;
+  private RunMode runMode;
+
+  public RunMode getRunMode() {
+    return runMode;
+  }
+
+  public void setRunMode(RunMode runMode) {
+    this.runMode = runMode;
+  }
 
   public boolean isUseCache() {
     return useCache;
