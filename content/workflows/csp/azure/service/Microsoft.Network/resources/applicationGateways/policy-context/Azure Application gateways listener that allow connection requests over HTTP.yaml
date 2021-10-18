@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Application gateways listener that allow connection requests over HTTP
+name: Azure Application gateways listener that allow connection requests over HTTP
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: applicationGateways
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - f552fc4a-b210-4ec1-adfe-c29350a04f92
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "f552fc4a-b210-4ec1-adfe-c29350a04f92"
+ 
+risk-config:
+  default-risk: medium

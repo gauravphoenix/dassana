@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on NetBIOS (UDP Port 137)
+name: Azure Network Security Group allows all traffic on NetBIOS (UDP Port 137)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 18e1dd76-9d0f-4cdb-96d4-9d01b5cd68dc
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "18e1dd76-9d0f-4cdb-96d4-9d01b5cd68dc"
+ 
+risk-config:
+  default-risk: high

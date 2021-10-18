@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center automatic provisioning of monitoring agent is set to Off
+name: Azure Security Center automatic provisioning of monitoring agent is set to Off
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 6c5091cc-2da3-42b3-877e-42fd7d9e85d6
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "6c5091cc-2da3-42b3-877e-42fd7d9e85d6"
+ 
+risk-config:
+  default-risk: medium

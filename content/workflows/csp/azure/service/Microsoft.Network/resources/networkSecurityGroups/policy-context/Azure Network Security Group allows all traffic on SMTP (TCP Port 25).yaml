@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on SMTP (TCP Port 25)
+name: Azure Network Security Group allows all traffic on SMTP (TCP Port 25)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - ac851899-1007-48c8-842f-dddb9a38c4ba
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "ac851899-1007-48c8-842f-dddb9a38c4ba"
+ 
+risk-config:
+  default-risk: high

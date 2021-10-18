@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center system updates monitoring is set to disabled
+name: Azure Security Center system updates monitoring is set to disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 57ed6965-ea15-46dc-9a8a-56140ffffc29
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "57ed6965-ea15-46dc-9a8a-56140ffffc29"
+ 
+risk-config:
+  default-risk: medium

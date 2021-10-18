@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on VNC Server (TCP Port 5900)
+name: Azure Network Security Group allows all traffic on VNC Server (TCP Port 5900)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 4cddc286-94b0-427a-8747-7f06b51d4689
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "4cddc286-94b0-427a-8747-7f06b51d4689"
+ 
+risk-config:
+  default-risk: high

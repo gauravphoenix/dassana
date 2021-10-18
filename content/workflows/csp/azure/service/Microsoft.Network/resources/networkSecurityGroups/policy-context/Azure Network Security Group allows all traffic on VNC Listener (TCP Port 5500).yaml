@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on VNC Listener (TCP Port 5500)
+name: Azure Network Security Group allows all traffic on VNC Listener (TCP Port 5500)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 91a53c5d-d629-45bb-9610-fbd2cb4c6f3c
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "91a53c5d-d629-45bb-9610-fbd2cb4c6f3c"
+ 
+risk-config:
+  default-risk: high

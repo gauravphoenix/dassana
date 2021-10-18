@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Application Gateway does not have the Web application firewall (WAF) enabled
+name: Azure Application Gateway does not have the Web application firewall (WAF) enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: applicationGateways
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 927d2db7-ae6f-4122-bc61-cdbc14c71d7d
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "927d2db7-ae6f-4122-bc61-cdbc14c71d7d"
+ 
+risk-config:
+  default-risk: medium

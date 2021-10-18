@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Watcher Network Security Group (NSG) flow logs are disabled
+name: Azure Network Watcher Network Security Group (NSG) flow logs are disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 360ca34f-141e-4772-8e07-52d5a14f2e6f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "360ca34f-141e-4772-8e07-52d5a14f2e6f"
+ 
+risk-config:
+  default-risk: medium

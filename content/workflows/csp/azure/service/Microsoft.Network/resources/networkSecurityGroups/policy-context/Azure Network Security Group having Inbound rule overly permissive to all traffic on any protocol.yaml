@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group having Inbound rule overly permissive to all traffic on any protocol
+name: Azure Network Security Group having Inbound rule overly permissive to all traffic on any protocol
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 840b4b1c-a50b-11e8-98d0-529269fb1459
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "840b4b1c-a50b-11e8-98d0-529269fb1459"
+ 
+risk-config:
+  default-risk: high

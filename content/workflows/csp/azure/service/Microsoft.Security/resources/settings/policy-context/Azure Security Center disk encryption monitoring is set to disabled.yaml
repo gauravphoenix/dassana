@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center disk encryption monitoring is set to disabled
+name: Azure Security Center disk encryption monitoring is set to disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 894e9b34-082b-4c24-ac6f-bdbf44e57ac7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "894e9b34-082b-4c24-ac6f-bdbf44e57ac7"
+ 
+risk-config:
+  default-risk: medium

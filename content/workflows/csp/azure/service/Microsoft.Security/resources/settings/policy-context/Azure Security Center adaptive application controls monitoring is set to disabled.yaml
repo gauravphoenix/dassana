@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center adaptive application controls monitoring is set to disabled
+name: Azure Security Center adaptive application controls monitoring is set to disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 7363990f-b1fb-42c8-ad4a-fbb06de0310d
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "7363990f-b1fb-42c8-ad4a-fbb06de0310d"
+ 
+risk-config:
+  default-risk: medium

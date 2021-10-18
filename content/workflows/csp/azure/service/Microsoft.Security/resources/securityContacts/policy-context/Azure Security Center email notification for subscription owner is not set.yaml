@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center email notification for subscription owner is not set
+name: Azure Security Center email notification for subscription owner is not set
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: securityContacts
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - fc914428-2c9a-4240-a3a7-769b85187278
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "fc914428-2c9a-4240-a3a7-769b85187278"
+ 
+risk-config:
+  default-risk: medium

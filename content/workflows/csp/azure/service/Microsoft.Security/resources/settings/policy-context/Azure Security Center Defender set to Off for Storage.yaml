@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center Defender set to Off for Storage
+name: Azure Security Center Defender set to Off for Storage
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5436f3cc-3815-44f4-ac09-b8418e1f8e1d
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5436f3cc-3815-44f4-ac09-b8418e1f8e1d"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center MCAS integration Disabled
+name: Azure Security Center MCAS integration Disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 470796d2-3ed6-40a3-b26a-e882afce4090
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "470796d2-3ed6-40a3-b26a-e882afce4090"
+ 
+risk-config:
+  default-risk: medium

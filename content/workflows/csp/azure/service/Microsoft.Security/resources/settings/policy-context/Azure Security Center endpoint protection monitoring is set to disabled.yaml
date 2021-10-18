@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center endpoint protection monitoring is set to disabled
+name: Azure Security Center endpoint protection monitoring is set to disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5315a853-6a6b-43eb-a771-5906f41130b8
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5315a853-6a6b-43eb-a771-5906f41130b8"
+ 
+risk-config:
+  default-risk: medium

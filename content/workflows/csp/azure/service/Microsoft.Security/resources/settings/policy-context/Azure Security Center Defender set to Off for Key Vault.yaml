@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center Defender set to Off for Key Vault
+name: Azure Security Center Defender set to Off for Key Vault
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 9706338d-291b-4937-be1e-752e251ac5a7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "9706338d-291b-4937-be1e-752e251ac5a7"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group with overly permissive outbound rule
+name: Azure Network Security Group with overly permissive outbound rule
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 22979dcf-b4d4-4a74-bf7f-2fae67adc3a9
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "22979dcf-b4d4-4a74-bf7f-2fae67adc3a9"
+ 
+risk-config:
+  default-risk: low

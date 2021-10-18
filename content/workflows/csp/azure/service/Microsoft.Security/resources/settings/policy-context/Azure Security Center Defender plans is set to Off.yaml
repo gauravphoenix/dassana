@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center Defender plans is set to Off
+name: Azure Security Center Defender plans is set to Off
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - c221ce81-99df-487e-8c05-4329335e9f9a
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "c221ce81-99df-487e-8c05-4329335e9f9a"
+ 
+risk-config:
+  default-risk: medium

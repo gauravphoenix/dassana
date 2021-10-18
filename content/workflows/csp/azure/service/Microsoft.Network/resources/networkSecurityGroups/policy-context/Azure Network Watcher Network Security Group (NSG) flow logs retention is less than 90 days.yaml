@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Watcher Network Security Group (NSG) flow logs retention is less than 90 days
+name: Azure Network Watcher Network Security Group (NSG) flow logs retention is less than 90 days
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 09fcb4f7-59f3-4101-a717-d4f5a5235067
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "09fcb4f7-59f3-4101-a717-d4f5a5235067"
+ 
+risk-config:
+  default-risk: medium

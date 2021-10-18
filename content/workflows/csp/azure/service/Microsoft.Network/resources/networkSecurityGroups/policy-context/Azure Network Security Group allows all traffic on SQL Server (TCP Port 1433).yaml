@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on SQL Server (TCP Port 1433)
+name: Azure Network Security Group allows all traffic on SQL Server (TCP Port 1433)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 3aa12e75-d78b-4157-9eca-6049187a30d7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3aa12e75-d78b-4157-9eca-6049187a30d7"
+ 
+risk-config:
+  default-risk: high

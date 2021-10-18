@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center Defender set to Off for Container Registries
+name: Azure Security Center Defender set to Off for Container Registries
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 1d0fa585-6da6-435f-a306-d36d5833f278
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "1d0fa585-6da6-435f-a306-d36d5833f278"
+ 
+risk-config:
+  default-risk: medium

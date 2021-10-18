@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Load Balancer diagnostics logs are disabled
+name: Azure Load Balancer diagnostics logs are disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: loadBalancers
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0280e32d-9366-4700-9763-a03be7196614
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0280e32d-9366-4700-9763-a03be7196614"
+ 
+risk-config:
+  default-risk: medium

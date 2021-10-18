@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Virtual Network subnet is not configured with a Network Security Group
+name: Azure Virtual Network subnet is not configured with a Network Security Group
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: virtualNetworks
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d3ed9388-fa76-44b7-ac6f-72503b6340e0
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d3ed9388-fa76-44b7-ac6f-72503b6340e0"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on MSQL (TCP Port 4333)
+name: Azure Network Security Group allows all traffic on MSQL (TCP Port 4333)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5826e50f-2f29-4444-9cad-3bb4e66ee3ca
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5826e50f-2f29-4444-9cad-3bb4e66ee3ca"
+ 
+risk-config:
+  default-risk: high

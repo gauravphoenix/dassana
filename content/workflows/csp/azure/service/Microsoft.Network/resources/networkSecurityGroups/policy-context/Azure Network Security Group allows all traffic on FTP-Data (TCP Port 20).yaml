@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on FTP-Data (TCP Port 20)
+name: Azure Network Security Group allows all traffic on FTP-Data (TCP Port 20)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - f48eda6b-5d66-4d73-a62e-671de3844555
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "f48eda6b-5d66-4d73-a62e-671de3844555"
+ 
+risk-config:
+  default-risk: high

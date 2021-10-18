@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center Defender set to Off for App Service
+name: Azure Security Center Defender set to Off for App Service
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 8953512c-4b2f-4622-a3c8-fff004bfec66
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "8953512c-4b2f-4622-a3c8-fff004bfec66"
+ 
+risk-config:
+  default-risk: medium

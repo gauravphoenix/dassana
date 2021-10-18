@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on SQL Server (UDP Port 1434)
+name: Azure Network Security Group allows all traffic on SQL Server (UDP Port 1434)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0546188d-6f21-449d-948e-677c285a5fcf
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0546188d-6f21-449d-948e-677c285a5fcf"
+ 
+risk-config:
+  default-risk: high

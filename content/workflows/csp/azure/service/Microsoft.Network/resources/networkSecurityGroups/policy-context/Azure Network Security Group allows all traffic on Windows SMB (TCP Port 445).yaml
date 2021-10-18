@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Network Security Group allows all traffic on Windows SMB (TCP Port 445)
+name: Azure Network Security Group allows all traffic on Windows SMB (TCP Port 445)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 500e9f2a-1063-4066-8eea-780efa90a0d7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "500e9f2a-1063-4066-8eea-780efa90a0d7"
+ 
+risk-config:
+  default-risk: high

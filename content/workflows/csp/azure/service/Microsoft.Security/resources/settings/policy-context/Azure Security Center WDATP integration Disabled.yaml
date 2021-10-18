@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Security Center WDATP integration Disabled
+name: Azure Security Center WDATP integration Disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Security
+resource-type: settings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - b7a63b07-551a-4813-82f5-f47b8428e0b3
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "b7a63b07-551a-4813-82f5-f47b8428e0b3"
+ 
+risk-config:
+  default-risk: medium
