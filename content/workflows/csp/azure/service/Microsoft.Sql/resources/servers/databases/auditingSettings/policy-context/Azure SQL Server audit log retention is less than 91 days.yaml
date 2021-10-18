@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Server audit log retention is less than 91 days
+name: Azure SQL Server audit log retention is less than 91 days
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/auditingSettings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0ca00469-8223-4753-a9df-4add7c37725f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0ca00469-8223-4753-a9df-4add7c37725f"
+ 
+risk-config:
+  default-risk: high

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage account containing VHD OS disk is not encrypted with CMK
+name: Azure Storage account containing VHD OS disk is not encrypted with CMK
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0cd3b371-0969-48ce-9d61-17b61ce9907c
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0cd3b371-0969-48ce-9d61-17b61ce9907c"
+ 
+risk-config:
+  default-risk: low

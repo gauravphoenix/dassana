@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App doesn't use latest TLS version
+name: Azure Function App doesn't use latest TLS version
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 7c24e2c1-3ef1-49bf-aaf4-f1a8e5459186
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "7c24e2c1-3ef1-49bf-aaf4-f1a8e5459186"
+ 
+risk-config:
+  default-risk: medium

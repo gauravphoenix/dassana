@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure App Service Web app doesn't use latest TLS version
+name: Azure App Service Web app doesn't use latest TLS version
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 74e43b65-16bf-42a5-8d10-a0f245716cde
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "74e43b65-16bf-42a5-8d10-a0f245716cde"
+ 
+risk-config:
+  default-risk: medium

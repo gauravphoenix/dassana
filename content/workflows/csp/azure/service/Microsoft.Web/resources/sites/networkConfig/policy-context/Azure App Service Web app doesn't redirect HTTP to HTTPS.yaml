@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure App Service Web app doesn't redirect HTTP to HTTPS
+name: Azure App Service Web app doesn't redirect HTTP to HTTPS
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 7cc2b77b-ad71-4a84-8cab-66b2b04eea5f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "7cc2b77b-ad71-4a84-8cab-66b2b04eea5f"
+ 
+risk-config:
+  default-risk: medium

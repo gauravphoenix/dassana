@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Servers Firewall rule allow access to all IPV4 address
+name: Azure SQL Servers Firewall rule allow access to all IPV4 address
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/virtualNetworkRules
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d3b3d6ff-5011-49ae-9228-10c6399481b4
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d3b3d6ff-5011-49ae-9228-10c6399481b4"
+ 
+risk-config:
+  default-risk: high

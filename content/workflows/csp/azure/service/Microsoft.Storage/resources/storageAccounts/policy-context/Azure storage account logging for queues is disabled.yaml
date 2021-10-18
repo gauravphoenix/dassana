@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure storage account logging for queues is disabled
+name: Azure storage account logging for queues is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - fde9482f-3ac2-43f6-bda2-bf2013074acd
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "fde9482f-3ac2-43f6-bda2-bf2013074acd"
+ 
+risk-config:
+  default-risk: medium

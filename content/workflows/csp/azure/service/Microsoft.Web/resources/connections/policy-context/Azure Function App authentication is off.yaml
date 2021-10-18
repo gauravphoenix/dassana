@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App authentication is off
+name: Azure Function App authentication is off
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: connections
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 90dc2872-7c50-4a57-a2af-4fc6fea535c5
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "90dc2872-7c50-4a57-a2af-4fc6fea535c5"
+ 
+risk-config:
+  default-risk: medium

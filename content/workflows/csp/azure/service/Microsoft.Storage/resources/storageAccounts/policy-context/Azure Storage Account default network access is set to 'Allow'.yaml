@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage Account default network access is set to 'Allow'
+name: Azure Storage Account default network access is set to 'Allow'
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 991aca47-286f-45be-8737-ff9c069beab6
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "991aca47-286f-45be-8737-ff9c069beab6"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App client certificate is disabled
+name: Azure Function App client certificate is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: certificates
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 55c94d7a-9608-4fa7-bd08-d99c05c2678a
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "55c94d7a-9608-4fa7-bd08-d99c05c2678a"
+ 
+risk-config:
+  default-risk: medium

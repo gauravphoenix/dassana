@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: SQL servers which do not have Azure Active Directory admin configured
+name: SQL servers which do not have Azure Active Directory admin configured
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 4d2615bb-091e-48fd-87b7-77a277d7d2fd
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "4d2615bb-091e-48fd-87b7-77a277d7d2fd"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Send alerts on field value on SQL Databases is misconfigured
+name: Send alerts on field value on SQL Databases is misconfigured
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/securityAlertPolicies
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: hygiene
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - a4acdd5b-e0bf-488d-8e61-23966f7a007e
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "a4acdd5b-e0bf-488d-8e61-23966f7a007e"
+ 
+risk-config:
+  default-risk: medium

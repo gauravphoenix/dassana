@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Storage Accounts without Secure transfer enabled
+name: Storage Accounts without Secure transfer enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - bc4e467f-10fa-471e-aa9b-28981dc73e93
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "bc4e467f-10fa-471e-aa9b-28981dc73e93"
+ 
+risk-config:
+  default-risk: medium

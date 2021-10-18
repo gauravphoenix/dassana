@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage Account Container with activity log has BYOK encryption disabled
+name: Azure Storage Account Container with activity log has BYOK encryption disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 217f8556-ccdb-4746-b4b7-2237298c81f1
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "217f8556-ccdb-4746-b4b7-2237298c81f1"
+ 
+risk-config:
+  default-risk: medium

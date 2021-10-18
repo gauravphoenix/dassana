@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Server advanced data security does not have an email alert recipient
+name: Azure SQL Server advanced data security does not have an email alert recipient
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/securityAlertPolicies
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0c9ebc28-a6d6-4c4b-b96d-0911a5e494dc
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0c9ebc28-a6d6-4c4b-b96d-0911a5e494dc"
+ 
+risk-config:
+  default-risk: medium

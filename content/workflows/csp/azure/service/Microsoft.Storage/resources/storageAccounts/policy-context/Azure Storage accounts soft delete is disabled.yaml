@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage accounts soft delete is disabled
+name: Azure Storage accounts soft delete is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: storage
+subcategory: availability
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - f5a29936-659e-48a8-8110-783411bf6a9c
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "f5a29936-659e-48a8-8110-783411bf6a9c"
+ 
+risk-config:
+  default-risk: medium

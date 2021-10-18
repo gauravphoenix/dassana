@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure App Services Remote debugging is enabled
+name: Azure App Services Remote debugging is enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 6fd5eaee-2e6d-419b-b380-2fa1a67feaf3
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "6fd5eaee-2e6d-419b-b380-2fa1a67feaf3"
+ 
+risk-config:
+  default-risk: low

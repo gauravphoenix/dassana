@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL server TDE protector is not encrypted with BYOK (Use your own key)
+name: Azure SQL server TDE protector is not encrypted with BYOK (Use your own key)
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/encryptionProtector
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d61d46dd-ac60-4765-a77a-75072c553318
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d61d46dd-ac60-4765-a77a-75072c553318"
+ 
+risk-config:
+  default-risk: medium

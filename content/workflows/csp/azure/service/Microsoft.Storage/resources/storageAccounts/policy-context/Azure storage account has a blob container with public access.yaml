@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure storage account has a blob container with public access
+name: Azure storage account has a blob container with public access
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: public-access
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 7a506ab4-d0a2-48ee-a6f5-75a97f11397d
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "7a506ab4-d0a2-48ee-a6f5-75a97f11397d"
+ 
+risk-config:
+  default-risk: high

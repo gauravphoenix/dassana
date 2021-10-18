@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App doesn't redirect HTTP to HTTPS
+name: Azure Function App doesn't redirect HTTP to HTTPS
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 46d8388d-72e4-413c-9a44-3670df42cfea
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "46d8388d-72e4-413c-9a44-3670df42cfea"
+ 
+risk-config:
+  default-risk: medium

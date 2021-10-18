@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure App Service Web app authentication is off
+name: Azure App Service Web app authentication is off
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: connections
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5e94790e-0d8b-4001-b97f-b5f7670a9236
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5e94790e-0d8b-4001-b97f-b5f7670a9236"
+ 
+risk-config:
+  default-risk: medium

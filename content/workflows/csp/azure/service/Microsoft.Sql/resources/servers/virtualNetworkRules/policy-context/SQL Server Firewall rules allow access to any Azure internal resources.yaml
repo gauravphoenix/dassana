@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: SQL Server Firewall rules allow access to any Azure internal resources
+name: SQL Server Firewall rules allow access to any Azure internal resources
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/virtualNetworkRules
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0faffeb6-dbcd-4715-be6e-f9cadc64cfeb
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0faffeb6-dbcd-4715-be6e-f9cadc64cfeb"
+ 
+risk-config:
+  default-risk: medium

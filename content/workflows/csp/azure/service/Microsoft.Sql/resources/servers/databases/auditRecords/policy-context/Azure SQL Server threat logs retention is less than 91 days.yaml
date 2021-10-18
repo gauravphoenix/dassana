@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Server threat logs retention is less than 91 days
+name: Azure SQL Server threat logs retention is less than 91 days
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/auditRecords
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d4e01bb5-d9e3-47e7-b7fb-c6ae17d2e9a4
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d4e01bb5-d9e3-47e7-b7fb-c6ae17d2e9a4"
+ 
+risk-config:
+  default-risk: high

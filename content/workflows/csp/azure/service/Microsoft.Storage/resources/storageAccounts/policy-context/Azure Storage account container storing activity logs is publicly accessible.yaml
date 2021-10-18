@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage account container storing activity logs is publicly accessible
+name: Azure Storage account container storing activity logs is publicly accessible
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: public-access
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 8a2315b0-70b9-477b-bd5c-41cb92a7b726
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "8a2315b0-70b9-477b-bd5c-41cb92a7b726"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App doesn't use HTTP 2.0
+name: Azure Function App doesn't use HTTP 2.0
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Web
+resource-type: sites/networkConfig
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: hygiene
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 6865e87f-5045-4319-bc32-b659bde8e3a2
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "6865e87f-5045-4319-bc32-b659bde8e3a2"
+ 
+risk-config:
+  default-risk: medium

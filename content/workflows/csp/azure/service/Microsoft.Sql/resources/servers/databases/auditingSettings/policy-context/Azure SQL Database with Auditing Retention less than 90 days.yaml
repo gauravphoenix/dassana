@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Database with Auditing Retention less than 90 days
+name: Azure SQL Database with Auditing Retention less than 90 days
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/auditingSettings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - fa6fa903-8887-49dd-917f-91687df98dd1
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "fa6fa903-8887-49dd-917f-91687df98dd1"
+ 
+risk-config:
+  default-risk: medium

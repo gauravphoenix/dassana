@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: SQL databases has encryption disabled
+name: SQL databases has encryption disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases
+ 
+class: risk
+subclass: config
+category: storage
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5a772daf-17c0-4a20-a689-2b3ab3f33779
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5a772daf-17c0-4a20-a689-2b3ab3f33779"
+ 
+risk-config:
+  default-risk: high

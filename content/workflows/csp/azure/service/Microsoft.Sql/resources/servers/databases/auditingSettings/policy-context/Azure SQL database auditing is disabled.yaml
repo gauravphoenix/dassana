@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL database auditing is disabled
+name: Azure SQL database auditing is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/auditingSettings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 96b1b8e3-6936-434f-94ab-a154cd5967d9
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "96b1b8e3-6936-434f-94ab-a154cd5967d9"
+ 
+risk-config:
+  default-risk: medium

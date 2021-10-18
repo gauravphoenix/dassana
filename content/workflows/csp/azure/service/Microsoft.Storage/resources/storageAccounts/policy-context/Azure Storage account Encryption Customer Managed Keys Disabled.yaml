@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Storage account Encryption Customer Managed Keys Disabled
+name: Azure Storage account Encryption Customer Managed Keys Disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Storage
+resource-type: storageAccounts
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 6ff0fbd8-cc5d-4123-ab41-3b92473e2517
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "6ff0fbd8-cc5d-4123-ab41-3b92473e2517"
+ 
+risk-config:
+  default-risk: medium

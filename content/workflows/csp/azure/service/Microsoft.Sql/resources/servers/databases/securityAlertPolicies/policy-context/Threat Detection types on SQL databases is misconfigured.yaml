@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Threat Detection types on SQL databases is misconfigured
+name: Threat Detection types on SQL databases is misconfigured
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/databases/securityAlertPolicies
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 2d5f8bcd-45da-41e8-a497-f7c70afeb5ad
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "2d5f8bcd-45da-41e8-a497-f7c70afeb5ad"
+ 
+risk-config:
+  default-risk: medium

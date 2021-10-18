@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure SQL Server threat detection alerts not enabled for all threat types
+name: Azure SQL Server threat detection alerts not enabled for all threat types
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Sql
+resource-type: servers/auditingSettings
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d265abb4-03b6-44fd-826f-1b769617077f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d265abb4-03b6-44fd-826f-1b769617077f"
+ 
+risk-config:
+  default-risk: medium
