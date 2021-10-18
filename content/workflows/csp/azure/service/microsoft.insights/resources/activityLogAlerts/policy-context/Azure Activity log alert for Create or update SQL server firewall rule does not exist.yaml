@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Activity log alert for Create or update SQL server firewall rule does not exist
+name: Azure Activity log alert for Create or update SQL server firewall rule does not exist
+labels:
+  - contextualization
+ 
+csp: azure
+service: microsoft.insights
+resource-type: activityLogAlerts
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 15cd19d3-e05e-4d13-b692-c72ea3f986af
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "15cd19d3-e05e-4d13-b692-c72ea3f986af"
+ 
+risk-config:
+  default-risk: low

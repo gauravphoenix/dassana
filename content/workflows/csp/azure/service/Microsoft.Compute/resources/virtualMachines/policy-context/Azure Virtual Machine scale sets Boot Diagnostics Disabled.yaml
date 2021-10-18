@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Virtual Machine scale sets Boot Diagnostics Disabled
+name: Azure Virtual Machine scale sets Boot Diagnostics Disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Compute
+resource-type: virtualMachines
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 3ad45ee2-b88d-4cd3-a039-0844c5687fcd
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3ad45ee2-b88d-4cd3-a039-0844c5687fcd"
+ 
+risk-config:
+  default-risk: low

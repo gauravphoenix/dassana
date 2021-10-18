@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure CDN Endpoint Custom domains using insecure TLS version
+name: Azure CDN Endpoint Custom domains using insecure TLS version
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Cdn
+resource-type: profiles/rulesets/rules
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 05e681af-c953-4490-97f0-bb444750f89f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "05e681af-c953-4490-97f0-bb444750f89f"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure PostgreSQL database server with SSL connection disabled
+name: Azure PostgreSQL database server with SSL connection disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DBforPostgreSQL
+resource-type: servers
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - bf4ad407-076c-40b9-a8fa-a0c80352a744
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "bf4ad407-076c-40b9-a8fa-a0c80352a744"
+ 
+risk-config:
+  default-risk: medium

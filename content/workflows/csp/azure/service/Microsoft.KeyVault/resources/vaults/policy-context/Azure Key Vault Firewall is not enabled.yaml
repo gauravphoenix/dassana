@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Key Vault Firewall is not enabled
+name: Azure Key Vault Firewall is not enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.KeyVault
+resource-type: vaults
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 7fe62a4c-4041-471c-80f5-6a78478a1ebd
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "7fe62a4c-4041-471c-80f5-6a78478a1ebd"
+ 
+risk-config:
+  default-risk: medium

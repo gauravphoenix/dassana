@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Cosmos DB Virtual network is not configured
+name: Azure Cosmos DB Virtual network is not configured
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DocumentDB
+resource-type: cassandraClusters
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 0f191e4f-ae38-49c4-8660-6a142a3f2721
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0f191e4f-ae38-49c4-8660-6a142a3f2721"
+ 
+risk-config:
+  default-risk: medium

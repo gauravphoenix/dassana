@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure AD Users can consent to apps accessing company data on their behalf is enabled
+name: Azure AD Users can consent to apps accessing company data on their behalf is enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.AzureActiveDirectory
+resource-type: b2ctenants
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 84bbc52e-b321-44b7-9c0a-13b34c875f1e
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "84bbc52e-b321-44b7-9c0a-13b34c875f1e"
+ 
+risk-config:
+  default-risk: low

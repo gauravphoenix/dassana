@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Function App doesn't have a Managed Service Identity
+name: Azure Function App doesn't have a Managed Service Identity
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.ManagedIdentity
+resource-type: Identities
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - ea2b2d97-1ea5-4f98-8f5c-16c978f1ced6
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "ea2b2d97-1ea5-4f98-8f5c-16c978f1ced6"
+ 
+risk-config:
+  default-risk: medium

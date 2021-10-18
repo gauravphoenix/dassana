@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure PostgreSQL database server with log duration parameter disabled
+name: Azure PostgreSQL database server with log duration parameter disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DBforPostgreSQL
+resource-type: servers
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - f6e50db0-4774-480f-b6c6-1126fa21a22a
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "f6e50db0-4774-480f-b6c6-1126fa21a22a"
+ 
+risk-config:
+  default-risk: medium

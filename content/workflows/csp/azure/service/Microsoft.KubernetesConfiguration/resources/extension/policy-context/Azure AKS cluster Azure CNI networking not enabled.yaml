@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure AKS cluster Azure CNI networking not enabled
+name: Azure AKS cluster Azure CNI networking not enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.KubernetesConfiguration
+resource-type: extension
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - ac313c08-1f79-4e55-96e4-49c20064bff0
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "ac313c08-1f79-4e55-96e4-49c20064bff0"
+ 
+risk-config:
+  default-risk: medium

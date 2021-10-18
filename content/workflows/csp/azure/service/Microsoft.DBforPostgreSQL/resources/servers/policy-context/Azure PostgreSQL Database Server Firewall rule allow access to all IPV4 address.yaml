@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure PostgreSQL Database Server Firewall rule allow access to all IPV4 address
+name: Azure PostgreSQL Database Server Firewall rule allow access to all IPV4 address
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DBforPostgreSQL
+resource-type: servers
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 49a1369e-e585-402e-9c09-b58c8e1db73c
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "49a1369e-e585-402e-9c09-b58c8e1db73c"
+ 
+risk-config:
+  default-risk: high

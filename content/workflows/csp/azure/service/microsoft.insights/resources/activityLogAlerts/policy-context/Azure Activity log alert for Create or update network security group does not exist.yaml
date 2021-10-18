@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Activity log alert for Create or update network security group does not exist
+name: Azure Activity log alert for Create or update network security group does not exist
+labels:
+  - contextualization
+ 
+csp: azure
+service: microsoft.insights
+resource-type: activityLogAlerts
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 5928a65d-65e0-4103-87c2-b16ac37f0243
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5928a65d-65e0-4103-87c2-b16ac37f0243"
+ 
+risk-config:
+  default-risk: low

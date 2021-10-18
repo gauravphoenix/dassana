@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure PostgreSQL database server with log disconnections parameter disabled
+name: Azure PostgreSQL database server with log disconnections parameter disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DBforPostgreSQL
+resource-type: servers
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 80c4ade7-44a2-4f01-9997-43c18bc4d7e1
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "80c4ade7-44a2-4f01-9997-43c18bc4d7e1"
+ 
+risk-config:
+  default-risk: medium

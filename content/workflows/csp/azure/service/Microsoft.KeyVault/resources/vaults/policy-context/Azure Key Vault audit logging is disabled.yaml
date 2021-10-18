@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Key Vault audit logging is disabled
+name: Azure Key Vault audit logging is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.KeyVault
+resource-type: vaults
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 56bfe7bb-ef47-4252-a335-9751a4826609
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "56bfe7bb-ef47-4252-a335-9751a4826609"
+ 
+risk-config:
+  default-risk: high

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Active Directory Security Defaults is disabled
+name: Azure Active Directory Security Defaults is disabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.AzureActiveDirectory
+resource-type: operations
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authorization
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 3aa38d7f-0d5e-466a-883b-771dd4c29f05
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3aa38d7f-0d5e-466a-883b-771dd4c29f05"
+ 
+risk-config:
+  default-risk: medium

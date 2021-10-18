@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Activity Log Retention should not be set to less than 365 days
+name: Activity Log Retention should not be set to less than 365 days
+labels:
+  - contextualization
+ 
+csp: azure
+service: microsoft.insights
+resource-type: logprofiles
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - a9937384-1ee3-430c-acda-fb97e357bfcd
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "a9937384-1ee3-430c-acda-fb97e357bfcd"
+ 
+risk-config:
+  default-risk: medium

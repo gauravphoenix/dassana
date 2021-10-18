@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure App Service Web app doesn't have a Managed Service Identity
+name: Azure App Service Web app doesn't have a Managed Service Identity
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.ManagedIdentity
+resource-type: Identities
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 329e3b79-b374-4434-b7c8-4d292aa4f991
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "329e3b79-b374-4434-b7c8-4d292aa4f991"
+ 
+risk-config:
+  default-risk: medium

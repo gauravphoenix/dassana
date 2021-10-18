@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Container registries Public access to All networks is enabled
+name: Azure Container registries Public access to All networks is enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.ContainerRegistry
+resource-type: registries
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: public-access
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - d283949a-7a91-4cc6-883c-944013c38202
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d283949a-7a91-4cc6-883c-944013c38202"
+ 
+risk-config:
+  default-risk: high

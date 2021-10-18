@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Monitoring log profile is not configured to export activity logs
+name: Azure Monitoring log profile is not configured to export activity logs
+labels:
+  - contextualization
+ 
+csp: azure
+service: microsoft.insights
+resource-type: logprofiles
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: logging
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - ebdba5a4-af9e-4015-a024-e8eb650e3be3
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "ebdba5a4-af9e-4015-a024-e8eb650e3be3"
+ 
+risk-config:
+  default-risk: medium

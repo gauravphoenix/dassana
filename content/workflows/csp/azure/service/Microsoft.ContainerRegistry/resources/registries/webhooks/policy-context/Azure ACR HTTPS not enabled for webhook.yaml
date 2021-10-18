@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure ACR HTTPS not enabled for webhook
+name: Azure ACR HTTPS not enabled for webhook
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.ContainerRegistry
+resource-type: registries/webhooks
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: encryption
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 9a28b0fb-67cd-4de9-80b0-702bc0ca6177
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "9a28b0fb-67cd-4de9-80b0-702bc0ca6177"
+ 
+risk-config:
+  default-risk: medium

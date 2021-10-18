@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure disk is unattached and is encrypted with the default encryption key instead of ADE/CMK
+name: Azure disk is unattached and is encrypted with the default encryption key instead of ADE/CMK
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Compute
+resource-type: disks
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - a1f899e5-0ff9-4883-a121-75c68cab532a
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "a1f899e5-0ff9-4883-a121-75c68cab532a"
+ 
+risk-config:
+  default-risk: medium

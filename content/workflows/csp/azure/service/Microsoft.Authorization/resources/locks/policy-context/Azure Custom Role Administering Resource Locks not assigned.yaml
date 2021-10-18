@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Custom Role Administering Resource Locks not assigned
+name: Azure Custom Role Administering Resource Locks not assigned
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Authorization
+resource-type: locks
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: hygiene
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - bc47859c-edf2-4485-808b-2b60b3893e4f
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "bc47859c-edf2-4485-808b-2b60b3893e4f"
+ 
+risk-config:
+  default-risk: low

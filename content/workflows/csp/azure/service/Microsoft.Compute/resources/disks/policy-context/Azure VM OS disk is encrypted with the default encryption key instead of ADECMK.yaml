@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure VM OS disk is encrypted with the default encryption key instead of ADE/CMK
+name: Azure VM OS disk is encrypted with the default encryption key instead of ADE/CMK
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Compute
+resource-type: disks
+ 
+class: risk
+subclass: config
+category: crypto
+subcategory: key-management
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - bfb072a7-f602-47ad-89ac-a3eb61d3427e
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "bfb072a7-f602-47ad-89ac-a3eb61d3427e"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Key Vault is not recoverable
+name: Azure Key Vault is not recoverable
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.KeyVault
+resource-type: deletedVaults
+ 
+class: risk
+subclass: config
+category: storage
+subcategory: availability
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 6c9c2a98-811f-4a04-8202-51285308bad9
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "6c9c2a98-811f-4a04-8202-51285308bad9"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Virtual Machine is not assigned to an availability set
+name: Azure Virtual Machine is not assigned to an availability set
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Compute
+resource-type: virtualMachines
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: availability
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 2d93f6b1-31bc-4128-a6f1-f86e5951dfb7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "2d93f6b1-31bc-4128-a6f1-f86e5951dfb7"
+ 
+risk-config:
+  default-risk: medium

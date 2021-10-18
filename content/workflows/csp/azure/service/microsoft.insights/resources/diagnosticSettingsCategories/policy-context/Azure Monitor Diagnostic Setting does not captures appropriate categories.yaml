@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Monitor Diagnostic Setting does not captures appropriate categories
+name: Azure Monitor Diagnostic Setting does not captures appropriate categories
+labels:
+  - contextualization
+ 
+csp: azure
+service: microsoft.insights
+resource-type: diagnosticSettingsCategories
+ 
+class: risk
+subclass: config
+category: visibility
+subcategory: monitoring
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 86d9615f-9e09-4ae5-a9fa-edb6927a8eec
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "86d9615f-9e09-4ae5-a9fa-edb6927a8eec"
+ 
+risk-config:
+  default-risk: low

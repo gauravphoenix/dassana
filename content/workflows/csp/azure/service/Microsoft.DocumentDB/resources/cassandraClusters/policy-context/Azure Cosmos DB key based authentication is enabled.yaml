@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure Cosmos DB key based authentication is enabled
+name: Azure Cosmos DB key based authentication is enabled
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.DocumentDB
+resource-type: cassandraClusters
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authentication
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 8fc7b6c0-d6c2-4f29-ad98-d837e7a74ec7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "8fc7b6c0-d6c2-4f29-ad98-d837e7a74ec7"
+ 
+risk-config:
+  default-risk: medium

@@ -1,0 +1,27 @@
+schema: 1
+type: policy-context
+ 
+id: Azure AKS enable role-based access control (RBAC) not enforced
+name: Azure AKS enable role-based access control (RBAC) not enforced
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Kubernetes
+resource-type: extension
+ 
+class: risk
+subclass: config
+category: iam
+subcategory: authorization
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 3b6626af-9601-4e99-ace5-7197cba0d37d
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3b6626af-9601-4e99-ace5-7197cba0d37d"
+ 
+risk-config:
+  default-risk: high
