@@ -1,8 +1,9 @@
 schema: 1
 type: policy-context
  
-id: Azure Application Gateway allows TLSv1.1 or lower
-name: Azure Application Gateway allows TLSv1.1 or lower
+id: application-gateway-allows-tlsv1.1-or-lower
+name: Insecure TLS versions are allowed by Azure Application Gateway.
+
 labels:
   - contextualization
  

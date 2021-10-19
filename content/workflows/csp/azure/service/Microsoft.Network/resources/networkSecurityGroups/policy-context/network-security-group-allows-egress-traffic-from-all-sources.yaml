@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Network Security Group with overly permissive outbound rule
-name: Azure Network Security Group with overly permissive outbound rule
+id: network-security-group-allows-egress-traffic-from-all-sources
+name: An Azure Network Security Group has a security rule which allows egress traffic from all sources
 labels:
   - contextualization
  

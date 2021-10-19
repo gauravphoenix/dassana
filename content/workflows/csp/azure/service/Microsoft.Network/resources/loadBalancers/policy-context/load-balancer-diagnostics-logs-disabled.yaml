@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Load Balancer diagnostics logs are disabled
-name: Azure Load Balancer diagnostics logs are disabled
+id: load-balancer-diagnostics-logs-disabled
+name: Diagnostics logs (metrics, alerts, and health information) for an Azure Load Balancer are disabled
 labels:
   - contextualization
  

@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Application Gateway does not have the Web application firewall (WAF) enabled
-name: Azure Application Gateway does not have the Web application firewall (WAF) enabled
+id: application-gateway-waf-disabled
+name: Web application firewall is disabled for an Azure Application Gateway
 labels:
   - contextualization
  

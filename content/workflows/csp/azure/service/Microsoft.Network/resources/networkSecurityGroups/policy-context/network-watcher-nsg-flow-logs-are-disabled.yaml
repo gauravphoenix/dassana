@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Network Watcher Network Security Group (NSG) flow logs are disabled
-name: Azure Network Watcher Network Security Group (NSG) flow logs are disabled
+id: network-watcher-nsg-flow-logs-are-disabled
+name: Flow logs are disabled for Azure Network Watcher
 labels:
   - contextualization
  

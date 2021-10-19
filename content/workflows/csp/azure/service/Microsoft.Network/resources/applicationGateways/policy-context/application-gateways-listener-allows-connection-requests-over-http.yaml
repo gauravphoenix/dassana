@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Application gateways listener that allow connection requests over HTTP
-name: Azure Application gateways listener that allow connection requests over HTTP
+id: application-gateways-listener-allows-connection-requests-over-http
+name: HTTP connection requests are allowed by an Azure Application Gateway
 labels:
   - contextualization
  

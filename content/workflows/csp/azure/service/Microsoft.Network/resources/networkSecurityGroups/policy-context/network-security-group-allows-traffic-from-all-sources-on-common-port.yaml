@@ -1,0 +1,50 @@
+schema: 1
+type: policy-context
+ 
+id: network-security-group-allows-traffic-from-all-sources-on-common-port
+name: An Azure Network Security Group has a security rule which allows traffic from all sources on a commonly-used port
+labels:
+  - contextualization
+ 
+csp: azure
+service: Microsoft.Network
+resource-type: networkSecurityGroups
+ 
+class: risk
+subclass: config
+category: networking
+subcategory: firewall
+ 
+filters:
+  - vendor: prisma-cloud
+    policies:
+      - 500e9f2a-1063-4066-8eea-780efa90a0d7
+    match-type: any
+    rules:
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "500e9f2a-1063-4066-8eea-780efa90a0d7"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "bc7929f8-fe70-48ec-8690-4288aa0b98ae"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "472e08a2-c741-43eb-a3ca-e2f5cd275cf7"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "f48eda6b-5d66-4d73-a62e-671de3844555"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0a3f1d49-4c05-47c4-98e2-3a42b822d05b"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5826e50f-2f29-4444-9cad-3bb4e66ee3ca"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "5dbd0da1-cfa4-4bce-a753-56dade428bd4"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "18e1dd76-9d0f-4cdb-96d4-9d01b5cd68dc"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3784cdfd-dd25-4cf3-b506-ad77033ccc35"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0c620876-4549-46c4-a5b3-16e86e3cefe7"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "709b47cd-6b7a-4500-b99e-a58529a6c79e"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0c7887a1-0cbe-4e00-bddf-87689fa65cd0"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "a0791206-a669-4948-a845-cc735212013c"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "a36a7170-d628-47fe-aab2-0e734702373d"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "ac851899-1007-48c8-842f-dddb9a38c4ba"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3aa12e75-d78b-4157-9eca-6049187a30d7"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "0546188d-6f21-449d-948e-677c285a5fcf"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "3beed53c-3f2d-47b6-bb6f-95da39ff0f26"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "936dd3cb-a9cc-4a13-9a2c-ea5d40856072"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "91a53c5d-d629-45bb-9610-fbd2cb4c6f3c"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "4cddc286-94b0-427a-8747-7f06b51d4689"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "4afdc071-53ca-4516-8a3c-d5c91345c409"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "840b4b1c-a50b-11e8-98d0-529269fb1459"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "543c6a0a-a50c-11e8-98d0-529269fb1459"
+      - .vendorId == "prisma-cloud" and .vendorPolicy == "d979e854-a50d-11e8-98d0-529269fb1459"
+risk-config:
+  default-risk: high

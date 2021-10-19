@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure virtual network peer is disconnected
-name: Azure virtual network peer is disconnected
+id: virtual-network-peer-disconnected
+name: Virtual network peers are disconnected, likely due to a deleted peering configuration
 labels:
   - contextualization
  

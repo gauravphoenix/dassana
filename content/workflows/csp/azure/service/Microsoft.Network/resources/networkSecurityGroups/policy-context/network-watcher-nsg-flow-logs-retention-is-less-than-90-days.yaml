@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Network Watcher Network Security Group (NSG) flow logs retention is less than 90 days
-name: Azure Network Watcher Network Security Group (NSG) flow logs retention is less than 90 days
+id: network-watcher-nsg-flow-logs-retention-is-less-than-90-days
+name: Flow logs settings have a retention policy less than 90 days for Azure Network Watcher
 labels:
   - contextualization
  

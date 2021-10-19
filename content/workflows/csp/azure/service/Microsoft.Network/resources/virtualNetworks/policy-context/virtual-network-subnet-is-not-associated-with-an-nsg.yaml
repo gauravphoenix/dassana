@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Virtual Network subnet is not configured with a Network Security Group
-name: Azure Virtual Network subnet is not configured with a Network Security Group
+id: virtual-network-subnet-is-not-associated-with-an-nsg
+name: Resources in a Virtual Network subnet are not protected at a subnet-level by a Network Security Group
 labels:
   - contextualization
  
