@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure Resource Group does not have a resource lock
-name: Azure Resource Group does not have a resource lock
+id: resource-group-does-not-have-a-resource-lock
+name: A Resource Group is not protected from deletion or modification by a resource lock
 labels:
   - contextualization
  

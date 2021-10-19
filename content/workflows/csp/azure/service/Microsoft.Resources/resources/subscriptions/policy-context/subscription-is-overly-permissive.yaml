@@ -1,8 +1,8 @@
 schema: 1
 type: policy-context
  
-id: Azure subscriptions with custom roles are overly permissive
-name: Azure subscriptions with custom roles are overly permissive
+id: subscription-is-overly-permissive
+name: An Azure subscription has a custom role which is granted permissions with wildcards 
 labels:
   - contextualization
  
