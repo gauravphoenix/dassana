@@ -5,6 +5,7 @@
 
 package app.dassana.core.risk.eval;
 
+import app.dassana.core.contentmanager.ContentManager;
 import app.dassana.core.risk.model.Risk;
 import app.dassana.core.risk.model.Rule;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,13 +32,17 @@ public class RiskEvaluator {
 
   Scope rootScope = Scope.newEmptyScope();
   private static final ObjectMapper MAPPER = new ObjectMapper();
-  private static List<String> riskValues = Arrays.asList("critical", "high", "medium", "low", "accepted", "");
+
+  // a string array to hold the risk severities in descending order (from critical to low)
+  private static final String[] riskValues = new String[]{ContentManager.RISKS.CRITICAL.getSeverity(),
+    ContentManager.RISKS.HIGH.getSeverity(), ContentManager.RISKS.MEDIUM.getSeverity(), ContentManager.RISKS.LOW.getSeverity(),
+    ContentManager.RISKS.ACCEPTED.getSeverity(), ContentManager.RISKS.EMPTY.getSeverity()};
 
   public Risk evaluate(RiskEvalRequest input) {
     Risk risk = new Risk();
     String defaultRisk = input.getDefaultRisk();
     risk.setRiskValue(defaultRisk);
-    risk.setName("default");
+    risk.setId("default");
     List<Rule> riskRules = input.getRiskRules();
 
     // map to hold the rules. key -> severity | value -> list of rules with same severity
@@ -69,7 +74,7 @@ public class RiskEvaluator {
         }
       } catch (Exception e) {
         throw new RiskEvalException(String.format("Unable to match rule %s condition %s", riskRule.getName(),
-            riskRule.getCondition()),e, risk.getName());
+            riskRule.getCondition()),e, risk.getId());
       }
     }
 
@@ -77,9 +82,10 @@ public class RiskEvaluator {
     for (String rv : riskValues) {
       if (map.containsKey(rv)) {
         risk.setRiskValue(map.get(rv).get(0).getRisk());
-        risk.setName(map.get(rv).get(0).getName());
+        risk.setId(map.get(rv).get(0).getName());
         risk.setCondition(map.get(rv).get(0).getCondition());
 
+        // breaks the for loop once we found the highest severity risk
         break;
       }
     }
