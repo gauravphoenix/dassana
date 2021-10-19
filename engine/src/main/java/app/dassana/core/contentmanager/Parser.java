@@ -153,6 +153,11 @@ public class Parser {
 
     RiskConfig riskConfig = new RiskConfig();
     List<Rule> riskRules = new LinkedList<>();
+    //    List<Rule> subRules = new LinkedList<>(); // List to store the subrules for each rule
+
+    // map to store the main rule as key and subrule as value
+    // or can modify the Rule class to accept subrules -> might be cleaner this eay
+    Map<Rule, List<Rule>> ruleToSubRule = new HashMap<>();
 
     JSONObject riskConfigObj = workFlowJson.optJSONObject("risk-config");
 
@@ -166,6 +171,10 @@ public class Parser {
           String id = ruleObj.getString("id");
           String condition = ruleObj.getString("condition");
           String risk = ruleObj.getString("risk");
+
+          // need to travese the subrule object and repeat lines 169-173 for subrules
+          // then the rule below will have an extra field -> List<Rule> subrules
+          // maybe create a new class for subrules... or figure out a way to reuse the same one.
 
           Rule rule = new Rule(id, condition, risk);
           riskRules.add(rule);
