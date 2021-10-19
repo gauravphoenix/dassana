@@ -13,14 +13,11 @@ def aws_credentials():
     os.environ["AWS_SECURITY_TOKEN"] = "testing"
     os.environ["AWS_SESSION_TOKEN"] = "testing"
 
-@pytest.fixture()
-def region():
-    return 'us-east-1'
 
 @pytest.fixture()
-def s3_client(aws_credentials, region):
+def s3_client(aws_credentials):
     with mock_s3():
-        yield boto3.client('s3', region_name=region)
+        yield boto3.client('s3', region_name='us-east-1')
 
 
 @pytest.fixture()
