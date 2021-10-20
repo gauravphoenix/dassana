@@ -1,9 +1,12 @@
 package app.dassana.core.risk.model;
 
+import java.util.List;
+
 public class Risk {
-  String name = "";
+  String id = "";
   String riskValue = "";
   String condition = "";
+  List<String> matched; // list object to hold matched risks with lower severity than main riskValue
 
   public String getCondition() {
     return condition;
@@ -13,12 +16,12 @@ public class Risk {
     this.condition = condition;
   }
 
-  public String getName() {
-    return name;
+  public String getId() {
+    return id;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setId(String id) {
+    this.id = id;
   }
 
   public String getRiskValue() {
@@ -27,5 +30,13 @@ public class Risk {
 
   public void setRiskValue(String riskValue) {
     this.riskValue = riskValue;
+  }
+
+  public List<String> getMatchedRisks() {
+    return matched;
+  }
+
+  public void setRiskRules(List<String> matched) {
+    this.matched = matched;
   }
 }

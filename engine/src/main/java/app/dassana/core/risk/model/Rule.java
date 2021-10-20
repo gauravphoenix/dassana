@@ -1,13 +1,15 @@
 package app.dassana.core.risk.model;
+import java.util.List;
 
 public class Rule {
 
-  String name;
+  String id;
   String condition;
   String risk;
+  List<SubRule> subRules;  // list object to hold all the sub-rules associated with a rule
 
-  public Rule(String name, String condition, String risk) {
-    this.name = name;
+  public Rule(String id, String condition, String risk) {
+    this.id = id;
     this.condition = condition;
     this.risk = risk;
   }
@@ -20,12 +22,12 @@ public class Rule {
     this.risk = risk;
   }
 
-  public String getName() {
-    return name;
+  public String getId() {
+    return id;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setName(String id) {
+    this.id = id;
   }
 
   public String getCondition() {
