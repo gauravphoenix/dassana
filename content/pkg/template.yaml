@@ -645,7 +645,7 @@ Resources:
   WhatEnisAreAttachedToSg:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handler.handle
+      Handler: handler_what_enis_are_attached_to_sg.py.handle
       Runtime: python3.7
       CodeUri: ../actions/what-enis-are-attached-to-sg
       Layers:
