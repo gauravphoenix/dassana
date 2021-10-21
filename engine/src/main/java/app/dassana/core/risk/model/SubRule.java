@@ -11,27 +11,27 @@ public class SubRule {
     this.risk = risk;
   }
 
-  public String getRisk() {
+  public String getSubRisk() {
     return risk;
   }
 
-  public void setRisk(String risk) {
+  public void setSubRisk(String risk) {
     this.risk = risk;
   }
 
-  public String getId() {
+  public String getSubRiskId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setSubRiskId(String id) {
     this.id = id;
   }
 
-  public String getCondition() {
+  public String getSubRiskCondition() {
     return condition;
   }
 
-  public void setCondition(String condition) {
+  public void setSubRiskCondition(String condition) {
     this.condition = condition;
   }
 }

@@ -1,4 +1,5 @@
 package app.dassana.core.risk.model;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Rule {
@@ -6,12 +7,17 @@ public class Rule {
   String id;
   String condition;
   String risk;
-  List<SubRule> subRules;  // list object to hold all the sub-rules associated with a rule
+  Boolean isSubRule;
 
-  public Rule(String id, String condition, String risk) {
+  // list object to hold all the sub-rules associated with a rule
+  List<SubRule> subRules;
+
+  public Rule(String id, String condition, String risk, Boolean isSubRule, List<SubRule> subRules) {
     this.id = id;
     this.condition = condition;
     this.risk = risk;
+    this.isSubRule = isSubRule;
+    this.subRules = subRules;
   }
 
   public String getRisk() {
@@ -26,7 +32,7 @@ public class Rule {
     return id;
   }
 
-  public void setName(String id) {
+  public void setId(String id) {
     this.id = id;
   }
 
@@ -37,4 +43,19 @@ public class Rule {
   public void setCondition(String condition) {
     this.condition = condition;
   }
+
+  public List<SubRule> getSubRules() {
+    if (subRules == null) {
+      return new LinkedList<>();
+    }
+    return this.subRules;
+  }
+
+  public void setSubRules(List<SubRule> subRules) {
+    this.subRules = subRules;
+  }
+
+  public Boolean getIsSubRule() {return isSubRule;}
+
+  public void setIsSubRule(Boolean isSubRule) {this.isSubRule = isSubRule;}
 }

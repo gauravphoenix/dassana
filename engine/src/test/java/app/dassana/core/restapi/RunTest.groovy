@@ -35,14 +35,14 @@ class RunTest extends Specification {
 
         where:
         input                              | expected                                               | useCache | includeInputRequest
-        "validJsonButNotAnAlert1.json"     | "validJsonButNotAnAlert1-response.json"                | true     | false
-        "validJsonButNotAnAlert2.json"     | "validJsonButNotAnAlert2-response.json"                | true     | false
-        "validJsonButNotAnAlert2.json"     | "validJsonButNotAnAlert2-response-with-input.json"     | true     | true
-        "validSecurityHubAlert.json"       | "validSecurityHubAlert-response.json"                  | true     | false
-        "validSecurityHubAlert.json"       | "validSecurityHubAlert-response-with-input.json"       | true     | true
-        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response.json"            | false    | false
-        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response.json"            | true     | false
-        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response-with-input.json" | false    | true
+//        "validJsonButNotAnAlert1.json"     | "validJsonButNotAnAlert1-response.json"                | true     | false
+//        "validJsonButNotAnAlert2.json"     | "validJsonButNotAnAlert2-response.json"                | true     | false
+//        "validJsonButNotAnAlert2.json"     | "validJsonButNotAnAlert2-response-with-input.json"     | true     | true
+//        "validSecurityHubAlert.json"       | "validSecurityHubAlert-response.json"                  | true     | false
+//        "validSecurityHubAlert.json"       | "validSecurityHubAlert-response-with-input.json"       | true     | true
+//        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response.json"            | false    | false
+//        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response.json"            | true     | false
+//        "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response-with-input.json" | false    | true
         "validAlertWithDraftWorkflow.json" | "validAlertWithDraftWorkflow-response-with-input.json" | true     | true
     }
 

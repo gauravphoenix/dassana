@@ -16,6 +16,7 @@ import app.dassana.core.resource.model.GeneralContext;
 import app.dassana.core.resource.model.ResourceContext;
 import app.dassana.core.risk.model.RiskConfig;
 import app.dassana.core.risk.model.Rule;
+import app.dassana.core.risk.model.SubRule;
 import app.dassana.core.rule.MatchType;
 import app.dassana.core.workflow.model.Filter;
 import app.dassana.core.workflow.model.Output;
@@ -153,11 +154,11 @@ public class Parser {
 
     RiskConfig riskConfig = new RiskConfig();
     List<Rule> riskRules = new LinkedList<>();
-    //    List<Rule> subRules = new LinkedList<>(); // List to store the subrules for each rule
+    List<SubRule> subRules = new LinkedList<>(); // List to store the subrules for each rule
 
     // map to store the main rule as key and subrule as value
     // or can modify the Rule class to accept subrules -> might be cleaner this eay
-    Map<Rule, List<Rule>> ruleToSubRule = new HashMap<>();
+//    Map<Rule, List<Rule>> ruleToSubRule = new HashMap<>(); // decided to go the latter way
 
     JSONObject riskConfigObj = workFlowJson.optJSONObject("risk-config");
 
@@ -176,7 +177,22 @@ public class Parser {
           // then the rule below will have an extra field -> List<Rule> subrules
           // maybe create a new class for subrules... or figure out a way to reuse the same one.
 
-          Rule rule = new Rule(id, condition, risk);
+          // get an opt array for the sub-risks
+          JSONArray subRulesJsonArray = ruleObj.optJSONArray("subrules");
+
+          // if there are any sub-risks add them to the sub-risks rule
+          if (subRulesJsonArray != null) {
+            for (int j = 0; j < subRulesJsonArray.length(); j++) {
+              JSONObject subRuleObj = subRulesJsonArray.getJSONObject(j);
+              String subRuleId = subRuleObj.getString("id");
+              String subRuleCondition = subRuleObj.getString("condition");
+              String subRuleRisk = subRuleObj.getString("risk");
+
+              SubRule subrule = new SubRule(subRuleId, subRuleCondition, subRuleRisk);
+              subRules.add(subrule);
+            }
+          }
+          Rule rule = new Rule(id, condition, risk, false, subRules);
           riskRules.add(rule);
 
         }

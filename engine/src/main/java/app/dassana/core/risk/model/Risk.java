@@ -36,7 +36,7 @@ public class Risk {
     return matched;
   }
 
-  public void setRiskRules(List<String> matched) {
+  public void setMatchedRisks(List<String> matched) {
     this.matched = matched;
   }
 }

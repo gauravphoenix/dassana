@@ -41,6 +41,42 @@
                 "type": "string",
                 "title": "The risk schema",
                 "enum": ["", "critical", "high", "medium", "low", "accepted"]
+              },
+              "subrules": {
+                "$id": "#/properties/risk-config/properties/rules/items/subrules",
+                "type": "array",
+                "title": "The subrules schema",
+                "additionalItems": true,
+                "items": {
+                  "$id": "#/properties/risk-config/properties/rules/items/subrules/items/0",
+                  "type": "object",
+                  "required": [ "id", "condition", "risk" ],
+                  "properties": {
+                    "id": {
+                      "$id": "#/properties/risk-config/properties/rules/items/subrules/items/0/properties/id",
+                      "default": "",
+                      "allOf": [
+                        {
+                          "type": "string",
+                          "pattern": "^[a-z0-9-]+$"
+                        }
+                      ],
+                      "title": "The id of the rule"
+                    },
+                    "condition": {
+                      "$id": "#/properties/risk-config/properties/rules/items/subrules/items/0/properties/condition",
+                      "type": "string",
+                      "title": "The jq condition"
+                    },
+                    "risk": {
+                      "$id": "#/properties/risk-config/properties/rules/items/subrules/items/0/properties/risk",
+                      "title": "The risk schema",
+                      "type": "string",
+                      "enum": [ "", "critical", "high", "medium", "low", "accepted"]
+                    }
+                  },
+                  "additionalProperties": false
+                }
               }
             },
             "additionalProperties": false
