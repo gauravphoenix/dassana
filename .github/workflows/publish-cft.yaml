@@ -1,7 +1,11 @@
 name: Build and Publish Dassana Open Source App as CFT
 on:
-  release:
-    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        logLevel:
+          description: "git tag e.g. v1.0.0 to promote to prod"
+          required: false
 jobs:
   build-and-publish-cft:
     permissions:
@@ -10,37 +14,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.1
-        with:
-          ref: ${{ github.event.inputs.GIT_TAG }}
-          persist-credentials: false
-      - name: Set tag env var
-        run: echo "GIT_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
-      - uses: actions/setup-java@v2
-        with:
-          distribution: "adopt"
-          java-version: "11"
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
       - uses: aws-actions/setup-sam@v1
       - uses: actions/setup-python@v2
         with:
           python-version: "3.7"
       - name: pack it up!
         run: |
-          cd content/pkg
-          sam build --cached --parallel --use-container
           cd ../../engine
-          mvn  -ntp -B clean compile -DkskipTest
-          cp -R ./target/classes/content ../content/pkg/.aws-sam/build/DassanaEngine/content/
-          cp -R ./target/classes/content ../content/pkg/.aws-sam/build/DassanaEngineApi/content/
-          cd ../content/pkg
-          tag=`git describe --tags`
-          sam package -t .aws-sam/build/template.yaml --s3-bucket ${{ secrets.SAM_ARTIFACTS_BUCKET }}  --s3-prefix $tag --region ${{ secrets.AWS_REGION }} --output-template-file uploaded-template.yaml
-          sed -i "s/__version-to-be-replaced-by-cicd__/$tag/g" uploaded-template.yaml
-          ts=`date +%s`
-          sed -i "s/ApiGatewayDeployment42/ApiGatewayDeployment$ts/g" uploaded-template.yaml
-          aws s3 cp uploaded-template.yaml s3://${{ secrets.SAM_ARTIFACTS_BUCKET }}/$tag/cft.yaml
+          mvn package -Dpackaging=docker-native -DskipTests
