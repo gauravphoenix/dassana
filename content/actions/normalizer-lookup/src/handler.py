@@ -44,7 +44,8 @@ with open('input.json', 'r') as f:
 @validator(inbound_schema=schema)
 @event_parser(model=Input)
 def handle(event: Input, context: LambdaContext):
-    if event.input.resourceType is not None and event.input.service is not None and event.input.csp is not None:
+    if event.input.resourceType is not None and event.input.service is not None and event.input.csp is not None and \
+            not any(event.input.alertClassification.__dict__.keys()):
         return loads(event.input.json())
     service, resource_type, csp, rh, class_ = next(filter(lambda x: x is not None,
                                                           map(find_policy_match,
