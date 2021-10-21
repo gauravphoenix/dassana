@@ -116,6 +116,7 @@ public class RiskEvaluator {
     List<String> matched = new LinkedList<>();
     Boolean isSubRuleFound = false;
     Boolean isMainRuleFound = false;
+    Boolean riskFound = false; // whether a higher risk has been found
 
     // to find the matching risk with the highest severity
     for (String rv : riskValues) { // parse through the severity array
@@ -124,13 +125,13 @@ public class RiskEvaluator {
         // need to parse through the array of matched risks with same severity to determine if it is sub-rule
         List<Rule> sameSeverityRules = map.get(rv); // list of matched rules with same severity
         for (app.dassana.core.risk.model.Rule ssr : sameSeverityRules) {
-          if (ssr.getIsSubRule() && !isSubRuleFound) { // if it's sub-rule; and it hasn't been matched before
+          if (!riskFound && ssr.getIsSubRule() && !isSubRuleFound) { // if it's sub-rule; and it hasn't been matched before
             tempRisk.setRiskValue(ssr.getRisk());
             tempRisk.setId(ssr.getId());
             tempRisk.setCondition(ssr.getCondition());
 
             isSubRuleFound = true; // to prevent overwriting of the already matched sub-rule
-          } else if (!ssr.getIsSubRule() && !isMainRuleFound) { // if it's main-rule; and it hasn't been matched before
+          } else if (!riskFound && !ssr.getIsSubRule() && !isMainRuleFound) { // if it's main-rule; and it hasn't been matched before
             risk.setRiskValue(ssr.getRisk());
             risk.setId(ssr.getId());
             risk.setCondition(ssr.getCondition());
@@ -143,8 +144,7 @@ public class RiskEvaluator {
 
         // to prevent the lower severity risks from overwriting the higher severity ones
         if (isMainRuleFound || isSubRuleFound) {
-          isMainRuleFound = true;
-          isSubRuleFound = true;
+          riskFound = true;
         }
 
         // breaks the for loop once we found the highest severity risk
