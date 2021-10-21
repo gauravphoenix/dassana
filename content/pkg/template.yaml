@@ -730,7 +730,7 @@ Resources:
   NormalizerLookup:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handler.handle
+      Handler: handler.handle
       Runtime: python3.8
       MemorySize: 128
       Layers:

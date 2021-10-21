@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from dassana.common.models import NormalizedOutput, AlertClassification
 from yaml import safe_load
 from json import loads, load
+from models import WORKFLOW_DIR
 
 
 class Input(BaseModel):
@@ -34,7 +35,7 @@ def find_policy_match(yml, vendorId="", policyId=""):
     return
 
 
-file_paths = glob('/opt/aws/**/*.yaml', recursive=True)
+file_paths = glob(WORKFLOW_DIR, recursive=True)
 policy_dict = dict(zip(file_paths, map(find_policy, file_paths)))
 
 with open('input.json', 'r') as f:
@@ -44,6 +45,8 @@ with open('input.json', 'r') as f:
 @validator(inbound_schema=schema)
 @event_parser(model=Input)
 def handle(event: Input, context: LambdaContext):
+    # If the input is missing resourceType, service, csp, OR any fields from alertClassification, then we proceed
+    # with lookup in the specified workflow directory.
     if event.input.resourceType is not None and event.input.service is not None and event.input.csp is not None and \
             not any(event.input.alertClassification.__dict__.keys()):
         return loads(event.input.json())
