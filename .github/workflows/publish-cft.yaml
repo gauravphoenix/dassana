@@ -17,4 +17,4 @@ jobs:
       - name: pack it up!
         run: |
           cd engine
-          mvn package -Dpackaging=docker-native -DskipTests
+          mvn --no-transfer-progress -B -DskipTests package -Dpackaging=docker-native
