@@ -426,6 +426,11 @@
         <artifactId>micronaut-maven-plugin</artifactId>
         <configuration>
           <mainClass>app.dassana.core.restapi.Application</mainClass>
+          <nativeImageBuildArgs>
+           <buildArg>
+             --trace-class-initialization=org.codehaus.groovy.reflection.stdclasses.LongCachedClass
+           </buildArg>
+          </nativeImageBuildArgs>
         </configuration>
       </plugin>
       <plugin>
