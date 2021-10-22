@@ -422,18 +422,25 @@
           </execution>
         </executions>
       </plugin>
+
+
+      <plugin>
+        <groupId>org.graalvm.nativeimage</groupId>
+        <artifactId>native-image-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>app.dassana.core.restapi.Application</mainClass>
+          <buildArgs combine.children="append">
+            <buildArg>--verbose</buildArg>
+          </buildArgs>
+        </configuration>
+      </plugin>
+
+
       <plugin>
         <groupId>io.micronaut.build</groupId>
         <artifactId>micronaut-maven-plugin</artifactId>
         <configuration>
           <mainClass>app.dassana.core.restapi.Application</mainClass>
-          <nativeImageBuildArgs>
-           <buildArg>
-             -H:+ReportExceptionStackTraces
-             --initialize-at-build-time=io.micronaut.*,org.codehaus.groovy.*,com.sun.beans.util.*
-             --trace-class-initialization=com.sun.beans.util.Cache$Kind$2,org.codehaus.groovy.runtime.dgmimpl.arrays.FloatArrayPutAtMetaMethod
-           </buildArg>
-          </nativeImageBuildArgs>
         </configuration>
       </plugin>
       <plugin>
