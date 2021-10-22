@@ -428,7 +428,8 @@
           <mainClass>app.dassana.core.restapi.Application</mainClass>
           <nativeImageBuildArgs>
            <buildArg>
-             --initialize-at-build-time=org.codehaus.groovy.*
+             -H:+ReportExceptionStackTraces --initialize-at-build-time=org.codehaus.groovy.*,com.sun.beans.util.*
+             --trace-class-initialization=com.sun.beans.util.Cache$Kind$2
            </buildArg>
           </nativeImageBuildArgs>
         </configuration>
