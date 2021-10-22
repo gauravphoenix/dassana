@@ -428,7 +428,7 @@
           <mainClass>app.dassana.core.restapi.Application</mainClass>
           <nativeImageBuildArgs>
            <buildArg>
-             --initialize-at-build-time=org.codehaus.groovy.reflection.stdclasses.LongCachedClass,org.codehaus.groovy.util.ReferenceBundle
+             --initialize-at-build-time=org.codehaus.groovy.*
            </buildArg>
           </nativeImageBuildArgs>
         </configuration>
