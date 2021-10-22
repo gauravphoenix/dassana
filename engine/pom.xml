@@ -241,6 +241,7 @@
     <dependency>
       <groupId>io.micronaut</groupId>
       <artifactId>micronaut-inject-groovy-test</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -428,8 +429,9 @@
           <mainClass>app.dassana.core.restapi.Application</mainClass>
           <nativeImageBuildArgs>
            <buildArg>
-             -H:+ReportExceptionStackTraces --initialize-at-build-time=org.codehaus.groovy.*,com.sun.beans.util.*
-             --trace-class-initialization=com.sun.beans.util.Cache$Kind$2
+             -H:+ReportExceptionStackTraces
+             --initialize-at-build-time=io.micronaut.*,org.codehaus.groovy.*,com.sun.beans.util.*
+             --trace-class-initialization=com.sun.beans.util.Cache$Kind$2,org.codehaus.groovy.runtime.dgmimpl.arrays.FloatArrayPutAtMetaMethod
            </buildArg>
           </nativeImageBuildArgs>
         </configuration>
